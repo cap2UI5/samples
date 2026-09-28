@@ -10,13 +10,14 @@ original builds it.
 > **Status: first examples.** Nine of the 129 apps are ported, to agree on the
 > conventions below before the rest follows. They need **cap2ui5 0.2.0**,
 > which is not on npm yet (`ViewBuilder` and the facade members the samples
-> use are in its `Unreleased` changelog). Until it is, install the plugin from
-> a cap2UI5 checkout:
+> use are in its `Unreleased` changelog). Until it is, a plain `npm install`
+> answers `ETARGET`; install the plugin packed from a cap2UI5 checkout instead,
+> which brings the other dependencies along:
 >
 > ```bash
 > (cd ../cap2UI5 && scripts/assemble-runtime.sh --package 1.145.0 && npm install \
 >   && npm pack --workspace plugin --pack-destination /tmp)
-> npm install && npm install --no-save /tmp/cap2ui5-*.tgz
+> npm install --no-save /tmp/cap2ui5-*.tgz
 > ```
 
 ## Run
