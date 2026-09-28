@@ -52,7 +52,7 @@ test("494 Data Binding: the typed name reaches the backend, the greeting comes b
     ["MESSAGE_BOX", "show", "Roundtrip done: the backend read NAME = 'Ada' and wrote GREETING back into the view."]);
 });
 
-test("495 Lifecycle: first run, event, and the return from a called app", async () => {
+test("495 Lifecycle: init, event, and the return from a called app", async () => {
   const APP = "Z2UI5_CL_SMP_APP_495";
   const start = await P({ app: APP });
   assert.deepEqual(start.json.MODEL.T_LOG.map((r) => r.NO), ["1"]);
@@ -62,24 +62,24 @@ test("495 Lifecycle: first run, event, and the return from a called app", async 
   assert.equal(log.json.MODEL.T_LOG.length, 2, "only the model is pushed");
 
   const call = await P({ app: APP, id: log.id, event: "CALL" });
-  assert.equal(call.app, "Z2UI5_CL_SMP_APP_493", "c.navTo( ) hands the screen to Basics I");
+  assert.equal(call.app, "Z2UI5_CL_SMP_APP_493", "nav_app_call( ) hands the screen to Basics I");
   assert.match(slot(call, "MAIN"), /Basics I - Hello World/);
   assert.match(slot(call, "MAIN"), /showNavButton="true"/, "the called app can go back");
 
-  // the called app's back button: c.eventNavBack( ), no branch in its main( )
+  // the called app's back button: _event_nav_app_leave( ), no branch in its main( )
   const back = await P({ app: call.app, id: call.id, event: firedBy(slot(call, "MAIN"), "navButtonPress") });
   assert.equal(back.app, APP, "the back button returns to the caller");
-  assert.match(slot(back, "MAIN") ?? "", /Basics III/, "the caller renders again (c.isDisplay)");
+  assert.match(slot(back, "MAIN") ?? "", /Basics III/, "the caller renders again (check_on_navigated)");
   assert.deepEqual(back.json.MODEL.T_LOG.map((r) => r.CHECK.split(" - ")[0]),
-    ["c.isFirstRun", "c.eventName", "c.eventName", "c.isDisplay"],
-    "the log survived the navigation, and the return is c.isDisplay without c.isFirstRun");
+    ["check_on_init( )", "check_on_event( )", "check_on_event( )", "check_on_navigated( )"],
+    "the log survived the navigation, and the return is check_on_navigated( ) without check_on_init( )");
 });
 
 test("011 Editable Table: edit mode, delete the selected rows, add a row", async () => {
   const APP = "Z2UI5_CL_SMP_APP_011";
   const start = await P({ app: APP });
   assert.match(slot(start, "MAIN"), /items="\{path: '\/T_TAB', templateShareable: false\}"/,
-    "the bare path of c.bind( t_tab, { path: true } ) in a composed binding");
+    "the bare path of _bind( { val: t_tab, path: true } ) in a composed binding");
   const rows = start.json.MODEL.T_TAB;
   assert.equal(rows.length, 6);
   assert.deepEqual(rows[0], { SELKZ: false, TITLE: "entry 01", VALUE: "red", DESCR: "this is a description",
@@ -143,7 +143,7 @@ test("488/489 Navigation: the called app returns an event and data, the caller r
   assert.equal(called.app, "Z2UI5_CL_SMP_APP_489");
   assert.deepEqual(called.json.MODEL, { S_RESULT: { PRODUCT: "Notebook Basic 15", QUANTITY: "2" } });
 
-  // the user edits both fields, then confirms: the data travels with navBack
+  // the user edits both fields, then confirms: the data travels with nav_app_leave( r_data )
   const confirm = await P({ app: called.app, id: called.id, event: "CONFIRM",
     model: { S_RESULT: { PRODUCT: "Notebook Pro 17", QUANTITY: "7" } } });
   assert.equal(confirm.app, "Z2UI5_CL_SMP_APP_488");

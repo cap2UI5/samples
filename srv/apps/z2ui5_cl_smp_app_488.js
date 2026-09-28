@@ -1,127 +1,131 @@
-/**
- * Navigation - Return Data and Events to the Caller
- *
- * The way back carries data: the called app returns an event name and a
- * payload (data) that the caller reads as c.eventData.
- *
- * Calls a second app (Z2UI5_CL_SMP_APP_489) with c.navTo( ). The called app
- * comes back with c.navBack( { event, data } ), handing an event name and a
- * data payload to its caller without knowing who called it. On return this
- * app enters main( ) with c.isDisplay and reads both: the event name from
- * c.eventName, the payload from c.eventData.
- *
- * @keywords navBack data eventData result return event payload
- * @origin abap2UI5/samples src/z2ui5_cl_smp_app_488.clas.abap
- */
-import { defineApp, ViewBuilder } from "cap2ui5";
+// @keywords r_data result get_app_prev return event payload
+// @summary The way back carries data: the called app returns an event name and a payload (r_data) that the caller reads from get_app_prev.
+// @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/navigation/inner_app
+// @origin abap2UI5/samples src/z2ui5_cl_smp_app_488.clas.abap
+//
+// Calls a second app (z2ui5_cl_smp_app_489) via client.nav_app_call( ). The
+// called app comes back with client.nav_app_leave( { event, r_data } ),
+// handing an event name and a data payload to its caller without knowing who
+// called it. On return this app enters main( ) via check_on_navigated( ) and
+// reads both from client.get( ): the event name from .event, the payload from
+// .r_event_data.
+import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
 
 defineApp("Z2UI5_CL_SMP_APP_488", class {
-  s_result = { product: "", quantity: "" };
+
+  s_result       = { product: "", quantity: "" };      // z2ui5_cl_smp_app_489=>ty_s_result
   returned_event = "";
 
-  main(c) {
+  main(client) {
 
-    if (c.isFirstRun) {
-      this.viewDisplay(c);
+    this.client = client;
 
-    } else if (c.isDisplay) {
-      this.onNavigation(c);
+    if (client.check_on_init()) {
+      this.view_display();
 
-    } else if (c.eventName === "CALL_APP") {
-      c.navTo("Z2UI5_CL_SMP_APP_489");
+    } else if (client.check_on_navigated()) {
+      this.on_navigation();
+
+    } else if (client.check_on_event("CALL_APP")) {
+      client.nav_app_call("Z2UI5_CL_SMP_APP_489");
     }
 
   }
 
-  onNavigation(c) {
+  on_navigation() {
 
-    this.returned_event = c.eventName;
+    const ls_get = this.client.get();
+    this.returned_event = ls_get.event;
 
     switch (this.returned_event) {
 
-      case "DATA_CONFIRMED":
+      case "DATA_CONFIRMED": {
 
-        // the payload handed over by navBack( { data } ) arrives typed, as
-        // plain values - the receiver decides what to do with it
-        if (c.eventData) {
+        // the payload handed over by nav_app_leave( r_data = ... ) arrives as
+        // plain data - the receiver decides what it is
+        const s_result = ls_get.r_event_data;
 
-          this.s_result = c.eventData;
-          c.messageToast(`Returned event ${this.returned_event}, ` +
-                         `product ${this.s_result.product}, quantity ${this.s_result.quantity}`);
+        if (s_result) {
+
+          this.s_result = s_result;
+          this.client.message_toast_display(`Returned event ${this.returned_event}, ` +
+                                            `product ${this.s_result.product}, quantity ${this.s_result.quantity}`);
 
         }
         break;
+      }
 
       case "DATA_CANCELLED":
 
-        this.s_result = { product: "", quantity: "" };
-        c.messageToast("Returned event DATA_CANCELLED, no data passed");
+        this.s_result = {};
+        this.client.message_toast_display("Returned event DATA_CANCELLED, no data passed");
         break;
 
     }
 
-    this.viewDisplay(c);
+    this.view_display();
 
   }
 
-  viewDisplay(c) {
+  view_display() {
 
-    const view = ViewBuilder.factory()
-        .ele("View", "mvc")
-            .a("displayBlock", "true")
-            .a("height", "100%")
-            .a("xmlns", "sap.m")
-            .a("xmlns:mvc", "sap.ui.core.mvc")
-            .a("xmlns:form", "sap.ui.layout.form")
-            .a("xmlns:layout", "sap.ui.layout");
+    const view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "View", ns: "mvc" })
+            .a({ n: "displayBlock", v: "true" })
+            .a({ n: "height",       v: "100%" })
+            .a({ n: "xmlns",        v: "sap.m" })
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" })
+            .a({ n: "xmlns:form",   v: "sap.ui.layout.form" })
+            .a({ n: "xmlns:layout", v: "sap.ui.layout" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a("title", "cap2UI5 - Navigation - Return Data and Events to the Caller")
-            .a("showNavButton", c.canGoBack)
-            .a("navButtonPress", c.eventNavBack());
+            .a({ n: "title",          v: "cap2UI5 - Navigation - Return Data and Events to the Caller" })
+            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
+            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
-        .a("text", "Calls a second app that returns via c.navBack( ) with an event and a data payload. " +
-                   "On return this app reads both - c.eventName and c.eventData - in its c.isDisplay " +
-                   "branch and shows them below.")
-        .a("type", "Information")
-        .a("showIcon", true)
-        .a("class", "sapUiSmallMargin");
+        .a({ n: "text",     v: "Calls a second app that returns via nav_app_leave with an event and a data " +
+                               "payload (r_data). On return this app reads both from client.get( ) in its " +
+                               "check_on_navigated( ) branch and shows them below." })
+        .a({ n: "type",     v: "Information" })
+        .a({ n: "showIcon", b: true })
+        .a({ n: "class",    v: "sapUiSmallMargin" });
 
-    const form = page.ele("Grid", "layout")
-        .a("defaultSpan", "L6 M12 S12")
-        .ele("content", "layout")
-            .ele("SimpleForm", "form")
-                .a("title", "Result returned by the called app")
-                .a("editable", true)
-                .ele("content", "form");
+    const form = page.ele({ n: "Grid", ns: "layout" })
+        .a({ n: "defaultSpan", v: "L6 M12 S12" })
+        .ele({ n: "content", ns: "layout" })
+            .ele({ n: "SimpleForm", ns: "form" })
+                .a({ n: "title",    v: "Result returned by the called app" })
+                .a({ n: "editable", b: true })
+                .ele({ n: "content", ns: "form" });
 
     form.tag("Label")
-        .a("text", "Open the input app");
+        .a({ n: "text", v: "Open the input app" });
     form.tag("Button")
-        .a("press", c.event("CALL_APP"))
-        .a("text", "call app (c.navTo)")
-        .a("type", "Emphasized");
+        .a({ n: "press", v: this.client._event("CALL_APP") })
+        .a({ n: "text",  v: "call app (nav_app_call)" })
+        .a({ n: "type",  v: "Emphasized" });
 
     form.tag("Label")
-        .a("text", "Returned event");
+        .a({ n: "text", v: "Returned event" });
     form.tag("Input")
-        .a("enabled", false)
-        .a("value", c.bind("returned_event"));
+        .a({ n: "enabled", b: false })
+        .a({ n: "value",   v: this.client._bind("returned_event") });
 
     form.tag("Label")
-        .a("text", "Returned product");
+        .a({ n: "text", v: "Returned product" });
     form.tag("Input")
-        .a("enabled", false)
-        .a("value", c.bind("s_result.product"));
+        .a({ n: "enabled", b: false })
+        .a({ n: "value",   v: this.client._bind("s_result-product") });
 
     form.tag("Label")
-        .a("text", "Returned quantity");
+        .a({ n: "text", v: "Returned quantity" });
     form.tag("Input")
-        .a("enabled", false)
-        .a("value", c.bind("s_result.quantity"));
+        .a({ n: "enabled", b: false })
+        .a({ n: "value",   v: this.client._bind("s_result-quantity") });
 
-    c.view(view);
+    this.client.view_display(view.stringify());
 
   }
+
 });

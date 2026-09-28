@@ -1,78 +1,75 @@
-/**
- * Basics II - Data Binding: Input and Button
- *
- * Binds a field of the class to an Input with c.bind( ), so what the user types
- * is in the field on the next roundtrip - a Text shows it back and a MessageBox
- * confirms the roundtrip.
- *
- * @keywords binding bind model field value input button roundtrip messagebox
- * @origin abap2UI5/samples src/z2ui5_cl_smp_app_494.clas.abap
- */
-import { defineApp, ViewBuilder } from "cap2ui5";
-
-const INFO =
-  "c.bind('name') connects the field NAME with the input below. Type a name and leave the " +
-  "field: the text next to it changes without any backend code, because both are bound to the " +
-  "same field. Press Greet and the backend reads NAME - already filled in, no event argument " +
-  "needed -, writes GREETING back into the view and confirms the roundtrip with a MessageBox.";
+// @keywords binding _bind model attribute value input button roundtrip messagebox serialize
+// @summary Binds a class attribute to an Input with _bind( ), so what the user types is in the variable on the next roundtrip - a Text shows it back and a MessageBox confirms the roundtrip.
+// @docs https://abap2ui5.github.io/docs/cookbook/model/binding https://abap2ui5.github.io/docs/tutorials/walkthrough/step-4
+// @origin abap2UI5/samples src/z2ui5_cl_smp_app_494.clas.abap
+import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
 
 defineApp("Z2UI5_CL_SMP_APP_494", class {
-  name = "";
+
+  name     = "";
   greeting = "";
 
-  main(c) {
-    if (c.isFirstRun) {
+  main(client) {
+
+    this.client = client;
+    if (client.check_on_init()) {
       this.name = "World";
-      this.viewDisplay(c);
-    } else if (c.isDisplay) {
-      this.viewDisplay(c);
-    } else if (c.eventName === "GREET") {
+      this.view_display();
+    } else if (client.check_on_navigated()) {
+      this.view_display();
+    } else if (client.check_on_event("GREET")) {
       this.greeting = `Hello ${this.name}!`;
-      c.messageBox(`Roundtrip done: the backend read NAME = '${this.name}' and wrote GREETING back into the view.`);
+      client.message_box_display(`Roundtrip done: the backend read NAME = '${this.name}' and wrote GREETING back into the view.`);
     }
+
   }
 
-  viewDisplay(c) {
+  view_display() {
 
-    const view = ViewBuilder.factory()
-        .ele("View", "mvc")
-            .a("displayBlock", "true")
-            .a("height", "100%")
-            .a("xmlns", "sap.m")
-            .a("xmlns:mvc", "sap.ui.core.mvc")
-            .a("xmlns:form", "sap.ui.layout.form");
+    const view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "View", ns: "mvc" })
+            .a({ n: "displayBlock", v: "true" })
+            .a({ n: "height",       v: "100%" })
+            .a({ n: "xmlns",        v: "sap.m" })
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" })
+            .a({ n: "xmlns:form",   v: "sap.ui.layout.form" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a("title", "cap2UI5 - Basics II - Data Binding: Input and Button")
-            .a("showNavButton", c.canGoBack)
-            .a("navButtonPress", c.eventNavBack());
+            .a({ n: "title",          v: "cap2UI5 - Basics II - Data Binding: Input and Button" })
+            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
+            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
-        .a("text", INFO)
-        .a("type", "Information")
-        .a("showIcon", true)
-        .a("class", "sapUiSmallMargin");
+        .a({ n: "text",     v: "client._bind( 'name' ) connects the field NAME with the input " +
+                               "below. Type a name and leave the field: the text " +
+                               "next to it changes without any backend code, because both are bound to the " +
+                               "same field. Press Greet and the backend reads NAME - already filled " +
+                               "in, no event argument needed -, writes GREETING back into the view and " +
+                               "confirms the roundtrip with a MessageBox." })
+        .a({ n: "type",     v: "Information" })
+        .a({ n: "showIcon", b: true })
+        .a({ n: "class",    v: "sapUiSmallMargin" });
 
-    page.ele("SimpleForm", "form")
-        .a("title", "Data Binding")
-        .a("editable", true)
-        .ele("content", "form")
+    page.ele({ n: "SimpleForm", ns: "form" })
+        .a({ n: "title",    v: "Data Binding" })
+        .a({ n: "editable", b: true })
+        .ele({ n: "content", ns: "form" })
             .tag("Label")
-                .a("text", "your name")
+                .a({ n: "text", v: "your name" })
             .tag("Input")
-                .a("value", c.bind("name"))
+                .a({ n: "value", v: this.client._bind("name") })
             .tag("Label")
-                .a("text", "bound to the same field")
+                .a({ n: "text", v: "bound to the same field" })
             .tag("Text")
-                .a("text", c.bind("name"))
+                .a({ n: "text", v: this.client._bind("name") })
             .tag("Label")
-                .a("text", "written by the backend")
+                .a({ n: "text", v: "written by the backend" })
             .tag("Text")
-                .a("text", c.bind("greeting"))
+                .a({ n: "text", v: this.client._bind("greeting") })
             .tag("Button")
-                .a("press", c.event("GREET"))
-                .a("text", "Greet");
-    c.view(view);
+                .a({ n: "press", v: this.client._event("GREET") })
+                .a({ n: "text",  v: "Greet" });
+    this.client.view_display(view.stringify());
 
   }
 });

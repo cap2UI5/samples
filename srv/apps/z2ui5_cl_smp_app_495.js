@@ -1,92 +1,89 @@
-/**
- * Basics III - Lifecycle: First Run, Event, Display
- *
- * The three questions main( ) asks - c.isFirstRun, c.eventName, c.isDisplay -
- * as one dispatcher, showing what survives a roundtrip and what a navigation
- * does to it.
- *
- * @keywords lifecycle roundtrip main dispatcher state draft isFirstRun isDisplay eventName
- * @origin abap2UI5/samples src/z2ui5_cl_smp_app_495.clas.abap
- */
-import { defineApp, t, ViewBuilder } from "cap2ui5";
-
-const INFO =
-  "main( ) runs on every roundtrip - c.isFirstRun, c.isDisplay and c.eventName tell it what " +
-  "the roundtrip is about. The list logs each call, and it survives them all: every field of " +
-  "the class is kept in the draft between the roundtrips, so the app keeps its state without " +
-  "a table of its own. Press Log - only the model is pushed, the view is not rebuilt. Call the " +
-  "sub-app and come back with its back button - that is the roundtrip c.isDisplay answers " +
-  "without c.isFirstRun.";
+// @keywords lifecycle roundtrip main dispatcher state serialize check_on_init check_on_event check_on_navigated
+// @summary The three questions main( ) asks - init, event, navigated - as one dispatcher, showing what survives a roundtrip and what a navigation does to it.
+// @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/life_cycle https://abap2ui5.github.io/docs/cookbook/expert_more/snippets https://abap2ui5.github.io/docs/tutorials/walkthrough/step-3
+// @origin abap2UI5/samples src/z2ui5_cl_smp_app_495.clas.abap
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
 
 defineApp("Z2UI5_CL_SMP_APP_495", class {
+
   t_log = t.table({ no: "", check: "" });
 
-  main(c) {
-    if (c.isFirstRun) {
+  main(client) {
 
-      this.logStep("c.isFirstRun - the very first call, nothing exists yet");
-      this.viewDisplay(c);
+    this.client = client;
+    if (client.check_on_init()) {
 
-    } else if (c.isDisplay) {
+      this.log_step("check_on_init( ) - the very first call, nothing exists yet");
+      this.view_display();
 
-      this.logStep("c.isDisplay - the sub-app returned, re-display the view");
-      this.viewDisplay(c);
+    } else if (client.check_on_navigated()) {
 
-    } else if (c.eventName === "LOG") {
-      this.logStep("c.eventName - a button was pressed, the view stays as it is");
+      this.log_step("check_on_navigated( ) - the sub-app returned, re-display the view");
+      this.view_display();
 
-    } else if (c.eventName === "CALL") {
+    } else if (client.check_on_event("LOG")) {
+      this.log_step("check_on_event( ) - a button was pressed, the view stays as it is");
 
-      this.logStep("c.eventName - calling Basics I as a sub-app");
-      c.navTo("Z2UI5_CL_SMP_APP_493");
+    } else if (client.check_on_event("CALL")) {
+
+      this.log_step("check_on_event( ) - calling Basics I as a sub-app");
+      client.nav_app_call("Z2UI5_CL_SMP_APP_493");
 
     }
+
   }
 
-  logStep(val) {
-    // a read is a copy of the table: the changed table is written back whole
+  log_step(val) {
+
+    // a read of t_log is a copy: the table with the new row is written back whole
     this.t_log = [...this.t_log, { no: String(this.t_log.length + 1), check: val }];
+
   }
 
-  viewDisplay(c) {
+  view_display() {
 
-    const view = ViewBuilder.factory()
-        .ele("View", "mvc")
-            .a("displayBlock", "true")
-            .a("height", "100%")
-            .a("xmlns", "sap.m")
-            .a("xmlns:mvc", "sap.ui.core.mvc");
+    const view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "View", ns: "mvc" })
+            .a({ n: "displayBlock", v: "true" })
+            .a({ n: "height",       v: "100%" })
+            .a({ n: "xmlns",        v: "sap.m" })
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a("title", "cap2UI5 - Basics III - Lifecycle: First Run, Event, Display")
-            .a("showNavButton", c.canGoBack)
-            .a("navButtonPress", c.eventNavBack());
+            .a({ n: "title",          v: "cap2UI5 - Basics III - Lifecycle: Init, Event, Navigated" })
+            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
+            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
-        .a("text", INFO)
-        .a("type", "Information")
-        .a("showIcon", true)
-        .a("class", "sapUiSmallMargin");
+        .a({ n: "text",     v: "main( ) runs on every roundtrip - the three checks tell it what the " +
+                               "roundtrip is about. The list logs each call, and it survives them all: " +
+                               "every field is serialized between the roundtrips, so the app " +
+                               "keeps its state without a table of its own. Press Log - only the model is pushed, " +
+                               "the view is not rebuilt. Call the sub-app and come back with its back " +
+                               "button - that is the roundtrip check_on_navigated( ) answers." })
+        .a({ n: "type",     v: "Information" })
+        .a({ n: "showIcon", b: true })
+        .a({ n: "class",    v: "sapUiSmallMargin" });
 
     page.ele("HBox")
-        .a("class", "sapUiSmallMargin")
+        .a({ n: "class", v: "sapUiSmallMargin" })
         .tag("Button")
-            .a("press", c.event("LOG"))
-            .a("text", "Log an Event")
+            .a({ n: "press", v: this.client._event("LOG") })
+            .a({ n: "text",  v: "Log an Event" })
         .tag("Button")
-            .a("press", c.event("CALL"))
-            .a("text", "Call a Sub-App")
-            .a("class", "sapUiTinyMarginBegin");
+            .a({ n: "press", v: this.client._event("CALL") })
+            .a({ n: "text",  v: "Call a Sub-App" })
+            .a({ n: "class", v: "sapUiTinyMarginBegin" });
 
     page.ele("List")
-        .a("headerText", "Calls of main( )")
-        .a("items", c.bind("t_log"))
-        .a("class", "sapUiSmallMargin")
+        .a({ n: "headerText", v: "Calls of main( )" })
+        .a({ n: "items",      v: this.client._bind("t_log") })
+        .a({ n: "class",      v: "sapUiSmallMargin" })
         .tag("StandardListItem")
-            .a("title", "{CHECK}")
-            .a("description", "call {NO}");
+            .a({ n: "title",       v: "{CHECK}" })
+            .a({ n: "description", v: "call {NO}" });
 
-    c.view(view);
+    this.client.view_display(view.stringify());
 
   }
 });
