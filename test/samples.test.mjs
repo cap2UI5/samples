@@ -19,15 +19,25 @@ const APPS = fs.readdirSync(path.join(ROOT, "srv/apps"))
   .filter((f) => /^z2ui5_cl_smp_app_\d+\.js$/.test(f))
   .map((f) => f.replace(/\.js$/, "").toUpperCase());
 
-test("every sample starts, and its view is well-formed XML titled cap2UI5", async () => {
+// A sample whose ABAP original shows nothing on its first roundtrip shows
+// nothing here either - the translation keeps what the original does.
+const NO_VIEW_ON_START = {
+  Z2UI5_CL_SMP_APP_186: "its init branch fills the fields and displays no view, in ABAP as here",
+};
+
+test("every sample starts, and its view is well-formed XML titled as in abap2UI5", async () => {
   assert.ok(APPS.length > 0);
   for (const app of APPS) {
     const r = await P({ app });
     ok(r);
     const xml = slot(r, "MAIN");
+    if (NO_VIEW_ON_START[app]) {
+      assert.equal(xml, undefined, `${app}: ${NO_VIEW_ON_START[app]} - it shows one now, so drop it from the list`);
+      continue;
+    }
     assert.ok(xml, `${app}: no MAIN view on the start`);
     assert.equal(wellFormed(xml), true, `${app}: ${wellFormed(xml)}`);
-    assert.match(xml, /title="cap2UI5 - /, `${app}: the page title`);
+    assert.match(xml, /title="abap2UI5 - /, `${app}: the page title - texts are the original's, 1:1`);
     assert.match(xml, /showNavButton="false"/, `${app}: started directly, there is nothing to go back to`);
     assert.ok(firedBy(xml, "navButtonPress"), `${app}: the back button carries the nav-back wire`);
   }

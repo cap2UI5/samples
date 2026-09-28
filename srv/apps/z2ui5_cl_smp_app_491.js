@@ -1,12 +1,12 @@
-// @keywords document.title tab caption headline set_title
-// @summary Sets the browser tab title from the app, so a bookmarked or duplicated window says which app it holds.
+// @keywords favicon icon tab image data uri
+// @summary Sets the browser tab's favicon at runtime, from an image the backend hands over as a data URI.
 // @docs https://abap2ui5.github.io/docs/cookbook/browser_interaction/title
-// @origin abap2UI5/samples src/z2ui5_cl_smp_app_125.clas.abap
+// @origin abap2UI5/samples src/z2ui5_cl_smp_app_491.clas.abap
 import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
 
-defineApp("Z2UI5_CL_SMP_APP_125", class {
+defineApp("Z2UI5_CL_SMP_APP_491", class {
 
-  title = "my title";
+  favicon = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='7' fill='%23f60'/></svg>";
 
   main(client) {
 
@@ -21,35 +21,35 @@ defineApp("Z2UI5_CL_SMP_APP_125", class {
               .a({ n: "xmlns:form",   v: "sap.ui.layout.form" });
       const page = view.ele("Shell")
           .ele("Page")
-              .a({ n: "title",          v: "abap2UI5 - Browser - Set the Tab Title" })
+              .a({ n: "title",          v: "abap2UI5 - Browser - Set the Tab Favicon" })
               .a({ n: "showNavButton",  b: client.check_app_prev_stack() })
               .a({ n: "navButtonPress", v: client._event_nav_app_leave() });
 
       page.tag("MessageStrip")
-          .a({ n: "text",     v: "Enter a title and press the button to run the set_title front-end action, which updates " +
-                     "the browser tab title (document.title) without reloading the page." })
+          .a({ n: "text",     v: "Enter an image URL (or data URI) and press the button to run the set_favicon front-end action, " +
+                     "which updates the browser tab icon (the link rel=\"icon\" tag) without reloading the page." })
           .a({ n: "type",     v: "Information" })
           .a({ n: "showIcon", b: true })
           .a({ n: "class",    v: "sapUiSmallMargin" });
 
       page.ele({ n: "SimpleForm", ns: "form" })
-          .a({ n: "title",    v: "Form Title" })
+          .a({ n: "title",    v: "Favicon" })
           .a({ n: "editable", b: true })
           .ele({ n: "content", ns: "form" })
               .tag("Label")
-                  .a({ n: "text", v: "title" })
+                  .a({ n: "text", v: "favicon url" })
               .tag("Input")
-                  .a({ n: "value", v: client._bind("title") })
+                  .a({ n: "value", v: client._bind("favicon") })
               .tag("Button")
-                  .a({ n: "press", v: client._event("SET_TITLE") })
-                  .a({ n: "text",  v: "Set Title" });
+                  .a({ n: "press", v: client._event("SET_FAVICON") })
+                  .a({ n: "text",  v: "Set Favicon" });
       client.view_display(view.stringify());
 
-    } else if (client.check_on_event("SET_TITLE")) {
+    } else if (client.check_on_event("SET_FAVICON")) {
 
       client.follow_up_action({
-          val:   z2ui5_if_client.cs_event.set_title,
-          t_arg: [ this.title ] });
+          val:   z2ui5_if_client.cs_event.set_favicon,
+          t_arg: [ this.favicon ] });
 
     }
 

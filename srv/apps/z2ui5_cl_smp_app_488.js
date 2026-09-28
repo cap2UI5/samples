@@ -3,17 +3,20 @@
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/navigation/inner_app
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_488.clas.abap
 //
-// Calls a second app (z2ui5_cl_smp_app_489) via client.nav_app_call( ). The
-// called app comes back with client.nav_app_leave( { event, r_data } ),
+// Calls a second app (z2ui5_cl_smp_app_489) via client->nav_app_call( ). The
+// called app comes back with client->nav_app_leave( event = ... r_data = ... ),
 // handing an event name and a data payload to its caller without knowing who
 // called it. On return this app enters main( ) via check_on_navigated( ) and
-// reads both from client.get( ): the event name from .event, the payload from
-// .r_event_data.
+// reads both from client->get( ): the event name from -event, the payload as a
+// data reference from -r_event_data.
 import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
 
 defineApp("Z2UI5_CL_SMP_APP_488", class {
 
-  s_result       = { product: "", quantity: "" };      // z2ui5_cl_smp_app_489=>ty_s_result
+  s_result       = {      // z2ui5_cl_smp_app_489=>ty_s_result
+    product:  "",
+    quantity: "",
+  };
   returned_event = "";
 
   main(client) {
@@ -33,17 +36,18 @@ defineApp("Z2UI5_CL_SMP_APP_488", class {
   }
 
   on_navigation() {
+    let s_result;
 
     const ls_get = this.client.get();
     this.returned_event = ls_get.event;
 
     switch (this.returned_event) {
 
-      case "DATA_CONFIRMED": {
+      case "DATA_CONFIRMED":
 
-        // the payload handed over by nav_app_leave( r_data = ... ) arrives as
-        // plain data - the receiver decides what it is
-        const s_result = ls_get.r_event_data;
+        // the payload handed over by nav_app_leave( r_data = ... ) arrives as a
+        // generic data reference - the receiver decides the type
+        s_result = ls_get.r_event_data;
 
         if (s_result) {
 
@@ -53,7 +57,6 @@ defineApp("Z2UI5_CL_SMP_APP_488", class {
 
         }
         break;
-      }
 
       case "DATA_CANCELLED":
 
@@ -79,14 +82,14 @@ defineApp("Z2UI5_CL_SMP_APP_488", class {
             .a({ n: "xmlns:layout", v: "sap.ui.layout" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a({ n: "title",          v: "cap2UI5 - Navigation - Return Data and Events to the Caller" })
+            .a({ n: "title",          v: "abap2UI5 - Navigation - Return Data and Events to the Caller" })
             .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
             .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
         .a({ n: "text",     v: "Calls a second app that returns via nav_app_leave with an event and a data " +
-                               "payload (r_data). On return this app reads both from client.get( ) in its " +
-                               "check_on_navigated( ) branch and shows them below." })
+                   "payload (r_data). On return this app reads both from client->get( ) in its " +
+                   "check_on_navigated( ) branch and shows them below." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });
@@ -127,5 +130,4 @@ defineApp("Z2UI5_CL_SMP_APP_488", class {
     this.client.view_display(view.stringify());
 
   }
-
 });

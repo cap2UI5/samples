@@ -13,17 +13,39 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
-      # Until cap2ui5 0.2.0 is on npm, the samples run against cap2UI5's main:
-      # its plugin packed as `npm publish` packs it, and installed alone -
-      # which brings the other dependencies along, as the README says for a
-      # local checkout. Once 0.2.0 is published this goes, a package-lock.json
-      # pins it, and `cache: npm` and npm ci come back.
+      # Until cap2ui5 0.2.0 is on npm, the samples run against cap2UI5's plugin:
+      # packed as `npm publish` packs it, and installed alone - which brings the
+      # other dependencies along, as the README says for a local checkout. Once
+      # it is published this goes, a package-lock.json pins it, and `cache: npm`
+      # and npm ci come back.
+      #
+      # The ref is the branch that adds abap2js (and t.numc, which
+      # z2ui5_cl_smp_app_067 needs) until that is on cap2UI5's main - then this
+      # line goes too.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: cap2UI5/cap2UI5
+          ref: claude/absp2ui5-cap2ui5-transfer-7pg6dg
           path: .cap2ui5
           persist-credentials: false
       - run: npm pack --pack-destination "$RUNNER_TEMP"
         working-directory: .cap2ui5/plugin
       - run: npm install --no-save --no-audit --no-fund "$RUNNER_TEMP"/cap2ui5-*.tgz
       - run: npm test
+
+      # ---- the translation: srv/apps is what abap2js makes of the pinned samples
+      - id: pin
+        run: echo "sha=$(cat ABAP2UI5_SAMPLES_PIN)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: abap2UI5/samples
+          ref: ${{ steps.pin.outputs.sha }}
+          path: .abap2UI5-samples
+          persist-credentials: false
+      - name: srv/apps is what abap2js makes of the pinned samples
+        run: node scripts/generate.mjs --check --samples .abap2UI5-samples
+      # every sample beside its transpiled ABAP original, roundtrip for roundtrip
+      - name: the samples behave as their ABAP originals
+        run: |
+          node scripts/originals.mjs --samples .abap2UI5-samples
+          node --test test/differential.mjs
