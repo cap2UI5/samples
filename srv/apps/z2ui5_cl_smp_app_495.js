@@ -8,7 +8,7 @@
  * @keywords lifecycle roundtrip main dispatcher state draft isFirstRun isDisplay eventName
  * @origin abap2UI5/samples src/z2ui5_cl_smp_app_495.clas.abap
  */
-import { defineApp, t } from "cap2ui5";
+import { defineApp, t, ViewBuilder } from "cap2ui5";
 
 const INFO =
   "main( ) runs on every roundtrip - c.isFirstRun, c.isDisplay and c.eventName tell it what " +
@@ -22,45 +22,71 @@ defineApp("Z2UI5_CL_SMP_APP_495", class {
   t_log = t.table({ no: "", check: "" });
 
   main(c) {
-    // `this` reads plain copies: a changed table is written back by assigning it
-    const log = (check) => {
-      this.t_log = [...this.t_log, { no: String(this.t_log.length + 1), check }];
-    };
-
     if (c.isFirstRun) {
-      log("c.isFirstRun - the very first call, nothing exists yet");
-      c.view(view(c));
+
+      this.logStep("c.isFirstRun - the very first call, nothing exists yet");
+      this.viewDisplay(c);
+
     } else if (c.isDisplay) {
-      log("c.isDisplay - the sub-app returned, re-display the view");
-      c.view(view(c));
+
+      this.logStep("c.isDisplay - the sub-app returned, re-display the view");
+      this.viewDisplay(c);
+
     } else if (c.eventName === "LOG") {
-      log("c.eventName - a button was pressed, the view stays as it is");
+      this.logStep("c.eventName - a button was pressed, the view stays as it is");
+
     } else if (c.eventName === "CALL") {
-      log("c.eventName - calling Basics I as a sub-app");
+
+      this.logStep("c.eventName - calling Basics I as a sub-app");
       c.navTo("Z2UI5_CL_SMP_APP_493");
-    } else if (c.eventName === "BACK") {
-      c.navBack();
+
     }
   }
-});
 
-function view(c) {
-  return `
-    <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" displayBlock="true" height="100%">
-      <Shell>
-        <Page
-            title="cap2UI5 - Basics III - Lifecycle: First Run, Event, Display"
-            showNavButton="${c.canGoBack}"
-            navButtonPress="${c.event("BACK")}">
-          <MessageStrip text="${INFO}" type="Information" showIcon="true" class="sapUiSmallMargin"/>
-          <HBox class="sapUiSmallMargin">
-            <Button press="${c.event("LOG")}" text="Log an Event"/>
-            <Button press="${c.event("CALL")}" text="Call a Sub-App" class="sapUiTinyMarginBegin"/>
-          </HBox>
-          <List headerText="Calls of main( )" items="${c.bind("t_log")}" class="sapUiSmallMargin">
-            <StandardListItem title="{CHECK}" description="call {NO}"/>
-          </List>
-        </Page>
-      </Shell>
-    </mvc:View>`;
-}
+  logStep(val) {
+    // a read is a copy of the table: the changed table is written back whole
+    this.t_log = [...this.t_log, { no: String(this.t_log.length + 1), check: val }];
+  }
+
+  viewDisplay(c) {
+
+    const view = ViewBuilder.factory()
+        .ele("View", "mvc")
+            .a("displayBlock", "true")
+            .a("height", "100%")
+            .a("xmlns", "sap.m")
+            .a("xmlns:mvc", "sap.ui.core.mvc");
+    const page = view.ele("Shell")
+        .ele("Page")
+            .a("title", "cap2UI5 - Basics III - Lifecycle: First Run, Event, Display")
+            .a("showNavButton", c.canGoBack)
+            .a("navButtonPress", c.eventNavBack());
+
+    page.tag("MessageStrip")
+        .a("text", INFO)
+        .a("type", "Information")
+        .a("showIcon", true)
+        .a("class", "sapUiSmallMargin");
+
+    page.ele("HBox")
+        .a("class", "sapUiSmallMargin")
+        .tag("Button")
+            .a("press", c.event("LOG"))
+            .a("text", "Log an Event")
+        .tag("Button")
+            .a("press", c.event("CALL"))
+            .a("text", "Call a Sub-App")
+            .a("class", "sapUiTinyMarginBegin");
+
+    page.ele("List")
+        .a("headerText", "Calls of main( )")
+        .a("items", c.bind("t_log"))
+        .a("class", "sapUiSmallMargin")
+        .tag("StandardListItem")
+            .a("title", "{CHECK}")
+            .a("description", "call {NO}");
+
+    c.view(view);
+
+  }
+});

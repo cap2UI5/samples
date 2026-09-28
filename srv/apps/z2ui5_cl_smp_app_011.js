@@ -7,11 +7,7 @@
  * @keywords edit input add row delete multiselect toolbar
  * @origin abap2UI5/samples src/z2ui5_cl_smp_app_011.clas.abap
  */
-import { defineApp, t } from "cap2ui5";
-
-const INFO =
-  "A MultiSelect table whose input cells switch between display and edit mode via the " +
-  "toolbar, which also adds new rows and deletes the currently selected ones.";
+import { defineApp, t, ViewBuilder } from "cap2ui5";
 
 defineApp("Z2UI5_CL_SMP_APP_011", class {
   t_tab = t.table({
@@ -26,8 +22,107 @@ defineApp("Z2UI5_CL_SMP_APP_011", class {
   });
   check_editable_active = false;
 
+  viewDisplay(c) {
+
+    const view = ViewBuilder.factory()
+        .ele("View", "mvc")
+            .a("displayBlock", "true")
+            .a("height", "100%")
+            .a("xmlns", "sap.m")
+            .a("xmlns:mvc", "sap.ui.core.mvc");
+    const page = view.ele("Shell")
+        .ele("Page")
+            .a("title", "cap2UI5 - Table - Editable Cells, Add and Delete Rows")
+            .a("showNavButton", c.canGoBack)
+            .a("navButtonPress", c.eventNavBack())
+            .a("id", "test2");
+
+    page.tag("MessageStrip")
+        .a("text", "A MultiSelect table whose input cells switch between display and edit mode via the " +
+                   "toolbar, which also adds new rows and deletes the currently selected ones.")
+        .a("type", "Information")
+        .a("showIcon", true)
+        .a("class", "sapUiSmallMargin");
+
+    const tab = page.ele("Table")
+        .a("items", `{path: '${c.bind("t_tab", { path: true })}', templateShareable: false}`)
+        .a("mode", "MultiSelect")
+        .ele("headerToolbar")
+            .ele("OverflowToolbar")
+                .tag("Title")
+                    .a("text", "title of the table")
+                .tag("Button")
+                    // shows an OverflowToolbar filling up - the press is a plain roundtrip
+                    .a("press", c.event("BUTTON_TEST"))
+                    .a("text", "test")
+                .tag("ToolbarSpacer")
+                .tag("Button")
+                    .a("press", c.event("BUTTON_DELETE"))
+                    .a("text", "delete selected row")
+                    .a("icon", "sap-icon://delete")
+                .tag("Button")
+                    .a("press", c.event("BUTTON_ADD"))
+                    .a("text", "add")
+                    .a("icon", "sap-icon://add")
+                .tag("Button")
+                    .a("press", c.event("BUTTON_EDIT"))
+                    .a("text", { t: this.check_editable_active ? "display" : "edit" })
+                    .a("tooltip", "Switch the cells between display and edit mode")
+                    .a("icon", "sap-icon://edit")
+            .end()
+        .end();
+
+    tab.ele("columns")
+        .ele("Column")
+            .tag("Text")
+                .a("text", "Title")
+        .end()
+        .ele("Column")
+            .tag("Text")
+                .a("text", "Color")
+        .end()
+        .ele("Column")
+            .tag("Text")
+                .a("text", "Info")
+        .end()
+        .ele("Column")
+            .tag("Text")
+                .a("text", "Description")
+        .end()
+        .ele("Column")
+            .tag("Text")
+                .a("text", "Checkbox");
+
+    tab.ele("items")
+        .ele("ColumnListItem")
+            .a("selected", "{SELKZ}")
+            .ele("cells")
+                .tag("Input")
+                    .a("id", "test")
+                    .a("enabled", "{EDITABLE}")
+                    .a("value", "{TITLE}")
+                .tag("Input")
+                    .a("enabled", "{EDITABLE}")
+                    .a("value", "{VALUE}")
+                .tag("Input")
+                    .a("enabled", "{EDITABLE}")
+                    .a("value", "{INFO}")
+                .tag("Input")
+                    .a("enabled", "{EDITABLE}")
+                    .a("value", "{DESCR}")
+                .tag("CheckBox")
+                    .a("selected", "{CHECKBOX}")
+                    .a("enabled", "{EDITABLE}");
+
+    c.view(view);
+
+  }
+
   main(c) {
+
     if (c.isFirstRun) {
+
+      this.check_editable_active = false;
       this.t_tab = [
         { title: "entry 01", value: "red", info: "completed", descr: "this is a description", checkbox: true },
         { title: "entry 02", value: "blue", info: "completed", descr: "this is a description", checkbox: true },
@@ -36,68 +131,23 @@ defineApp("Z2UI5_CL_SMP_APP_011", class {
         { title: "entry 05", value: "grey", info: "completed", descr: "this is a description", checkbox: true },
         {},
       ];
-    }
 
-    if (c.isDisplay) {
-      c.view(view(c, this));
+      this.viewDisplay(c);
+    } else if (c.isDisplay) {
+      this.viewDisplay(c);
+
     } else if (c.eventName === "BUTTON_EDIT") {
-      // `this` reads plain copies: a changed table is written back by assigning it
+      // a read is a copy of the table: the changed rows are written back whole
       this.check_editable_active = !this.check_editable_active;
       this.t_tab = this.t_tab.map((row) => ({ ...row, editable: this.check_editable_active }));
+
     } else if (c.eventName === "BUTTON_DELETE") {
       this.t_tab = this.t_tab.filter((row) => !row.selkz);
+
     } else if (c.eventName === "BUTTON_ADD") {
+
       this.t_tab = [...this.t_tab, { editable: this.check_editable_active }];
-    } else if (c.eventName === "BACK") {
-      c.navBack();
     }
+
   }
 });
-
-function view(c, app) {
-  return `
-    <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" displayBlock="true" height="100%">
-      <Shell>
-        <Page
-            title="cap2UI5 - Table - Editable Cells, Add and Delete Rows"
-            showNavButton="${c.canGoBack}"
-            navButtonPress="${c.event("BACK")}">
-          <MessageStrip text="${INFO}" type="Information" showIcon="true" class="sapUiSmallMargin"/>
-          <Table items="${c.bind("t_tab")}" mode="MultiSelect">
-            <headerToolbar>
-              <OverflowToolbar>
-                <Title text="title of the table"/>
-                <Button press="${c.event("BUTTON_TEST")}" text="test"/>
-                <ToolbarSpacer/>
-                <Button press="${c.event("BUTTON_DELETE")}" text="delete selected row" icon="sap-icon://delete"/>
-                <Button press="${c.event("BUTTON_ADD")}" text="add" icon="sap-icon://add"/>
-                <Button
-                    press="${c.event("BUTTON_EDIT")}"
-                    text="${app.check_editable_active ? "display" : "edit"}"
-                    tooltip="Switch the cells between display and edit mode"
-                    icon="sap-icon://edit"/>
-              </OverflowToolbar>
-            </headerToolbar>
-            <columns>
-              <Column><Text text="Title"/></Column>
-              <Column><Text text="Color"/></Column>
-              <Column><Text text="Info"/></Column>
-              <Column><Text text="Description"/></Column>
-              <Column><Text text="Checkbox"/></Column>
-            </columns>
-            <items>
-              <ColumnListItem selected="{SELKZ}">
-                <cells>
-                  <Input enabled="{EDITABLE}" value="{TITLE}"/>
-                  <Input enabled="{EDITABLE}" value="{VALUE}"/>
-                  <Input enabled="{EDITABLE}" value="{INFO}"/>
-                  <Input enabled="{EDITABLE}" value="{DESCR}"/>
-                  <CheckBox selected="{CHECKBOX}" enabled="{EDITABLE}"/>
-                </cells>
-              </ColumnListItem>
-            </items>
-          </Table>
-        </Page>
-      </Shell>
-    </mvc:View>`;
-}

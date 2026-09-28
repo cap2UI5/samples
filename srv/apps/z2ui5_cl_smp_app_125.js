@@ -4,67 +4,56 @@
  * Sets the browser tab title from the app, so a bookmarked or duplicated window
  * says which app it holds.
  *
- * The facade `c` has no follow_up_action( ) yet, so this sample reaches the
- * framework's own z2ui5_if_client through the escape hatch c.raw: asynchronous,
- * and with the ABAP-typed arguments the transpiled method expects.
- *
- * @keywords document.title tab caption headline set_title follow_up_action raw
+ * @keywords document.title tab caption headline set_title followUpAction
  * @origin abap2UI5/samples src/z2ui5_cl_smp_app_125.clas.abap
  */
-/* global abap */
-import { defineApp } from "cap2ui5";
-
-const INFO =
-  "Enter a title and press the button to run the SET_TITLE front-end action, which updates " +
-  "the browser tab title (document.title) without reloading the page.";
-
-/** z2ui5_if_client~follow_up_action( val = action t_arg = args ), through c.raw */
-async function followUpAction(c, action, args = []) {
-  const t_arg = abap.types.TableFactory.construct(
-    new abap.types.String({ qualifiedName: "STRING" }),
-    {
-      withHeader: false,
-      keyType: "DEFAULT",
-      primaryKey: { isUnique: false, type: "STANDARD", keyFields: [], name: "primary_key" },
-      secondary: [],
-    },
-    "STRING_TABLE");
-  for (const arg of args) t_arg.append(new abap.types.String().set(String(arg)));
-  await c.raw.z2ui5_if_client$follow_up_action({ val: action, t_arg });
-}
+import { defineApp, ViewBuilder } from "cap2ui5";
 
 defineApp("Z2UI5_CL_SMP_APP_125", class {
   title = "my title";
 
-  async main(c) {
+  main(c) {
+
     if (c.isDisplay) {
-      c.view(`
-        <mvc:View
-            xmlns:mvc="sap.ui.core.mvc"
-            xmlns="sap.m"
-            xmlns:form="sap.ui.layout.form"
-            displayBlock="true"
-            height="100%">
-          <Shell>
-            <Page
-                title="cap2UI5 - Browser - Set the Tab Title"
-                showNavButton="${c.canGoBack}"
-                navButtonPress="${c.event("BACK")}">
-              <MessageStrip text="${INFO}" type="Information" showIcon="true" class="sapUiSmallMargin"/>
-              <form:SimpleForm title="Form Title" editable="true">
-                <form:content>
-                  <Label text="title"/>
-                  <Input value="${c.bind("title")}"/>
-                  <Button press="${c.event("SET_TITLE")}" text="Set Title"/>
-                </form:content>
-              </form:SimpleForm>
-            </Page>
-          </Shell>
-        </mvc:View>`);
+
+      const view = ViewBuilder.factory()
+          .ele("View", "mvc")
+              .a("displayBlock", "true")
+              .a("height", "100%")
+              .a("xmlns", "sap.m")
+              .a("xmlns:mvc", "sap.ui.core.mvc")
+              .a("xmlns:form", "sap.ui.layout.form");
+      const page = view.ele("Shell")
+          .ele("Page")
+              .a("title", "cap2UI5 - Browser - Set the Tab Title")
+              .a("showNavButton", c.canGoBack)
+              .a("navButtonPress", c.eventNavBack());
+
+      page.tag("MessageStrip")
+          .a("text", "Enter a title and press the button to run the set_title front-end action, which updates " +
+                     "the browser tab title (document.title) without reloading the page.")
+          .a("type", "Information")
+          .a("showIcon", true)
+          .a("class", "sapUiSmallMargin");
+
+      page.ele("SimpleForm", "form")
+          .a("title", "Form Title")
+          .a("editable", true)
+          .ele("content", "form")
+              .tag("Label")
+                  .a("text", "title")
+              .tag("Input")
+                  .a("value", c.bind("title"))
+              .tag("Button")
+                  .a("press", c.event("SET_TITLE"))
+                  .a("text", "Set Title");
+      c.view(view);
+
     } else if (c.eventName === "SET_TITLE") {
-      await followUpAction(c, "SET_TITLE", [this.title]);
-    } else if (c.eventName === "BACK") {
-      c.navBack();
+
+      c.followUpAction("set_title", [this.title]);
+
     }
+
   }
 });

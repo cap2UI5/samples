@@ -8,7 +8,7 @@
  * @keywords binding bind model field value input button roundtrip messagebox
  * @origin abap2UI5/samples src/z2ui5_cl_smp_app_494.clas.abap
  */
-import { defineApp } from "cap2ui5";
+import { defineApp, ViewBuilder } from "cap2ui5";
 
 const INFO =
   "c.bind('name') connects the field NAME with the input below. Type a name and leave the " +
@@ -17,44 +17,62 @@ const INFO =
   "needed -, writes GREETING back into the view and confirms the roundtrip with a MessageBox.";
 
 defineApp("Z2UI5_CL_SMP_APP_494", class {
-  name = "World";
+  name = "";
   greeting = "";
 
   main(c) {
-    if (c.isDisplay) {
-      c.view(`
-        <mvc:View
-            xmlns:mvc="sap.ui.core.mvc"
-            xmlns="sap.m"
-            xmlns:form="sap.ui.layout.form"
-            displayBlock="true"
-            height="100%">
-          <Shell>
-            <Page
-                title="cap2UI5 - Basics II - Data Binding: Input and Button"
-                showNavButton="${c.canGoBack}"
-                navButtonPress="${c.event("BACK")}">
-              <MessageStrip text="${INFO}" type="Information" showIcon="true" class="sapUiSmallMargin"/>
-              <form:SimpleForm title="Data Binding" editable="true">
-                <form:content>
-                  <Label text="your name"/>
-                  <Input value="${c.bind("name")}"/>
-                  <Label text="bound to the same field"/>
-                  <Text text="${c.bind("name")}"/>
-                  <Label text="written by the backend"/>
-                  <Text text="${c.bind("greeting")}"/>
-                  <Button press="${c.event("GREET")}" text="Greet"/>
-                </form:content>
-              </form:SimpleForm>
-            </Page>
-          </Shell>
-        </mvc:View>`);
+    if (c.isFirstRun) {
+      this.name = "World";
+      this.viewDisplay(c);
+    } else if (c.isDisplay) {
+      this.viewDisplay(c);
     } else if (c.eventName === "GREET") {
       this.greeting = `Hello ${this.name}!`;
-      c.messageBox(
-        `Roundtrip done: the backend read NAME = '${this.name}' and wrote GREETING back into the view.`);
-    } else if (c.eventName === "BACK") {
-      c.navBack();
+      c.messageBox(`Roundtrip done: the backend read NAME = '${this.name}' and wrote GREETING back into the view.`);
     }
+  }
+
+  viewDisplay(c) {
+
+    const view = ViewBuilder.factory()
+        .ele("View", "mvc")
+            .a("displayBlock", "true")
+            .a("height", "100%")
+            .a("xmlns", "sap.m")
+            .a("xmlns:mvc", "sap.ui.core.mvc")
+            .a("xmlns:form", "sap.ui.layout.form");
+    const page = view.ele("Shell")
+        .ele("Page")
+            .a("title", "cap2UI5 - Basics II - Data Binding: Input and Button")
+            .a("showNavButton", c.canGoBack)
+            .a("navButtonPress", c.eventNavBack());
+
+    page.tag("MessageStrip")
+        .a("text", INFO)
+        .a("type", "Information")
+        .a("showIcon", true)
+        .a("class", "sapUiSmallMargin");
+
+    page.ele("SimpleForm", "form")
+        .a("title", "Data Binding")
+        .a("editable", true)
+        .ele("content", "form")
+            .tag("Label")
+                .a("text", "your name")
+            .tag("Input")
+                .a("value", c.bind("name"))
+            .tag("Label")
+                .a("text", "bound to the same field")
+            .tag("Text")
+                .a("text", c.bind("name"))
+            .tag("Label")
+                .a("text", "written by the backend")
+            .tag("Text")
+                .a("text", c.bind("greeting"))
+            .tag("Button")
+                .a("press", c.event("GREET"))
+                .a("text", "Greet");
+    c.view(view);
+
   }
 });

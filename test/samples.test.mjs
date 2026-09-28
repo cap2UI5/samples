@@ -1,6 +1,7 @@
-// Every sample, driven over the wire against the published cap2ui5 package:
-// it starts, its view is well-formed XML, and its events do what the sample
-// says they do - including the navigation round trips between two apps.
+// Every sample, driven over the wire: it starts, its view is well-formed XML,
+// and its events do what the sample says they do - including the navigation
+// round trips between two apps, where the tests send back the event the
+// page's back button carries, as the browser does.
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
@@ -10,6 +11,9 @@ import { actions, destroys, post, ROOT, serve, slot, wellFormed } from "./server
 const s = serve();
 const P = (o) => post(s.url, o);
 const ok = (r) => assert.equal(r.status, 200, r.text.slice(0, 500));
+
+/** the event a handler attribute's wire fires, as the browser sends it back */
+const firedBy = (xml, attr) => xml.match(new RegExp(`${attr}="\\.eB\\(\\['([^']+)'`))?.[1];
 
 const APPS = fs.readdirSync(path.join(ROOT, "srv/apps"))
   .filter((f) => /^z2ui5_cl_smp_app_\d+\.js$/.test(f))
@@ -25,6 +29,7 @@ test("every sample starts, and its view is well-formed XML titled cap2UI5", asyn
     assert.equal(wellFormed(xml), true, `${app}: ${wellFormed(xml)}`);
     assert.match(xml, /title="cap2UI5 - /, `${app}: the page title`);
     assert.match(xml, /showNavButton="false"/, `${app}: started directly, there is nothing to go back to`);
+    assert.ok(firedBy(xml, "navButtonPress"), `${app}: the back button carries the nav-back wire`);
   }
 });
 
@@ -61,8 +66,9 @@ test("495 Lifecycle: first run, event, and the return from a called app", async 
   assert.match(slot(call, "MAIN"), /Basics I - Hello World/);
   assert.match(slot(call, "MAIN"), /showNavButton="true"/, "the called app can go back");
 
-  const back = await P({ app: call.app, id: call.id, event: "BACK" });
-  assert.equal(back.app, APP, "c.navBack( ) returns to the caller");
+  // the called app's back button: c.eventNavBack( ), no branch in its main( )
+  const back = await P({ app: call.app, id: call.id, event: firedBy(slot(call, "MAIN"), "navButtonPress") });
+  assert.equal(back.app, APP, "the back button returns to the caller");
   assert.match(slot(back, "MAIN") ?? "", /Basics III/, "the caller renders again (c.isDisplay)");
   assert.deepEqual(back.json.MODEL.T_LOG.map((r) => r.CHECK.split(" - ")[0]),
     ["c.isFirstRun", "c.eventName", "c.eventName", "c.isDisplay"],
@@ -72,6 +78,8 @@ test("495 Lifecycle: first run, event, and the return from a called app", async 
 test("011 Editable Table: edit mode, delete the selected rows, add a row", async () => {
   const APP = "Z2UI5_CL_SMP_APP_011";
   const start = await P({ app: APP });
+  assert.match(slot(start, "MAIN"), /items="\{path: '\/T_TAB', templateShareable: false\}"/,
+    "the bare path of c.bind( t_tab, { path: true } ) in a composed binding");
   const rows = start.json.MODEL.T_TAB;
   assert.equal(rows.length, 6);
   assert.deepEqual(rows[0], { SELKZ: false, TITLE: "entry 01", VALUE: "red", DESCR: "this is a description",
@@ -126,21 +134,24 @@ test("161 Dialog inside a Dialog: open, chain to the second, back to the first, 
   assert.ok(destroys(close, "POPUP"), "the popup is closed");
 });
 
-test("488/489 Navigation: the called app returns an event, the caller reads its data", async () => {
+test("488/489 Navigation: the called app returns an event and data, the caller reads both", async () => {
   const start = await P({ app: "Z2UI5_CL_SMP_APP_488" });
   assert.deepEqual(start.json.MODEL, { S_RESULT: { PRODUCT: "", QUANTITY: "" }, RETURNED_EVENT: "" });
+  assert.match(slot(start, "MAIN"), /value="\{\/S_RESULT\/PRODUCT\}"/, "a structure component, bound by name");
 
   const called = await P({ app: "Z2UI5_CL_SMP_APP_488", id: start.id, event: "CALL_APP" });
   assert.equal(called.app, "Z2UI5_CL_SMP_APP_489");
   assert.deepEqual(called.json.MODEL, { S_RESULT: { PRODUCT: "Notebook Basic 15", QUANTITY: "2" } });
 
-  // the user edits both fields - bound relatively inside binding="{/S_RESULT}"
+  // the user edits both fields, then confirms: the data travels with navBack
   const confirm = await P({ app: called.app, id: called.id, event: "CONFIRM",
     model: { S_RESULT: { PRODUCT: "Notebook Pro 17", QUANTITY: "7" } } });
   assert.equal(confirm.app, "Z2UI5_CL_SMP_APP_488");
   assert.deepEqual(confirm.json.MODEL,
     { S_RESULT: { PRODUCT: "Notebook Pro 17", QUANTITY: "7" }, RETURNED_EVENT: "DATA_CONFIRMED" });
   assert.match(slot(confirm, "MAIN") ?? "", /Result returned by the called app/, "the caller renders again");
+  assert.deepEqual(actions(confirm).find((a) => a[0] === "MESSAGE_TOAST")?.[2],
+    "Returned event DATA_CONFIRMED, product Notebook Pro 17, quantity 7");
 
   const again = await P({ app: "Z2UI5_CL_SMP_APP_488", id: confirm.id, event: "CALL_APP" });
   const cancel = await P({ app: again.app, id: again.id, event: "CANCEL" });
@@ -148,7 +159,7 @@ test("488/489 Navigation: the called app returns an event, the caller reads its 
     { S_RESULT: { PRODUCT: "", QUANTITY: "" }, RETURNED_EVENT: "DATA_CANCELLED" });
 });
 
-test("125 Tab Title: the front-end action goes out through c.raw", async () => {
+test("125 Tab Title: the set_title front-end action", async () => {
   const APP = "Z2UI5_CL_SMP_APP_125";
   const start = await P({ app: APP });
   const set = await P({ app: APP, id: start.id, event: "SET_TITLE", model: { TITLE: "Invoices" } });

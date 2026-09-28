@@ -2,18 +2,29 @@
 
 The [abap2UI5 samples](https://github.com/abap2UI5/samples) as
 [cap2UI5](https://github.com/cap2UI5/cap2UI5) apps: every sample a plain
-JavaScript class in `srv/apps/`, in an ordinary CAP project.
+JavaScript class in `srv/apps/`, in an ordinary CAP project, its view built
+with `ViewBuilder` - abap2UI5's own view builder - call for call as the ABAP
+original builds it.
 
 > [!NOTE]
 > **Status: first examples.** Nine of the 129 apps are ported, to agree on the
-> conventions below before the rest follows.
+> conventions below before the rest follows. They need **cap2ui5 0.2.0**,
+> which is not on npm yet (`ViewBuilder` and the facade members the samples
+> use are in its `Unreleased` changelog). Until it is, install the plugin from
+> a cap2UI5 checkout:
+>
+> ```bash
+> (cd ../cap2UI5 && scripts/assemble-runtime.sh --package 1.145.0 && npm install \
+>   && npm pack --workspace plugin --pack-destination /tmp)
+> npm install && npm install --no-save /tmp/cap2ui5-*.tgz
+> ```
 
 ## Run
 
 ```bash
 npm install
 npm run watch        # cds watch - prints the address of every sample
-npm test             # every sample driven over the wire against the published cap2ui5
+npm test             # every sample driven over the wire
 ```
 
 Log in as `alice` with an empty password (CAP's mocked development user), then
@@ -40,6 +51,12 @@ becomes `srv/apps/z2ui5_cl_smp_app_493.js`, registered as
 that calls another one keeps calling it by its name, and `@origin` in the
 file header points back at the original.
 
+**The same structure.** The dispatcher is the original's `IF` / `ELSEIF`
+chain, its methods keep their roles (`view_display` becomes `viewDisplay(c)`),
+and the view is the original's chain with the same verbs, the same tree and
+the same layout: one call per line, four spaces per tree level, `end()` in
+the column of the `ele()` it closes.
+
 | abap2UI5 | cap2UI5 |
 |---|---|
 | `DATA name TYPE string.` | `name = "";` - the initial value is the type |
@@ -47,43 +64,30 @@ file header points back at the original.
 | `client->check_on_init( )` | `c.isFirstRun` - seed state here |
 | `client->check_on_navigated( )` | `c.isDisplay` - render here |
 | `client->check_on_event( 'X' )`, `get_event( )` | `c.eventName === "X"` |
-| `client->_bind( name )` | `c.bind("name")` - the field's **name** |
+| `z2ui5_cl_ui5_view_builder=>factory( )->ele( n = … ns = … )` | `ViewBuilder.factory().ele(n, ns)` |
+| `->a( n = … v = … )` / `b = …` / `t = …` | `.a(n, "…")` / `.a(n, true)` / `.a(n, { t: … })` |
+| `client->view_display( view->stringify( ) )` | `c.view(view)` |
+| `client->_bind( name )`, `_bind( s_order-customer )` | `c.bind("name")`, `c.bind("s_order.customer")` |
+| `client->_bind( val = t_tab path = abap_true )` | `c.bind("t_tab", { path: true })` |
 | `client->_event( val = 'X' t_arg = … )` | `c.event("X", [ … ])` |
 | `client->get_event_arg( 1 )` | `c.eventArg(1)` |
-| `z2ui5_cl_ui5_view_builder` chain | an XML template literal |
-| `client->view_display( )`, `popup_display( )` | `c.view( )`, `c.popup( )` |
 | `client->check_app_prev_stack( )` | `c.canGoBack` |
-| `client->_event_nav_app_leave( )` | `c.event("BACK")`, answered with `c.navBack( )` |
+| `client->_event_nav_app_leave( )` | `c.eventNavBack()` |
+| `client->follow_up_action( val = cs_event-set_title … )` | `c.followUpAction("set_title", [ … ])` |
 | `client->nav_app_call( NEW z…( ) )` | `c.navTo("Z…")` |
+| `client->nav_app_leave( event = … r_data = … )` | `c.navBack({ event, data })` |
+| `client->get( )-r_event_data` | `c.eventData` |
 | `client->get_app_prev( )` | `c.prevApp` - the other app's fields as plain values |
 
 The page title says `cap2UI5 - …`, and the explaining texts name the
 JavaScript API, not the ABAP one.
 
-### Four things that differ from ABAP
+### What differs from ABAP
 
 1. **`this` reads plain copies.** Assign to write:
    `this.t_tab = [...this.t_tab, row]`. A `push` on the copy is lost.
-2. **A table field starts empty**, whatever rows its initializer lists:
-   declare it with `t.table({ …one row… })` and seed it in `c.isFirstRun`.
-   Scalars and structures keep their initial values.
-3. **Helpers are functions, not methods.** In `cap2ui5` 0.1.0 a method called
-   from `main( )` sees the framework's ABAP boxes instead of the values, so
-   the view is built by a module function that gets `c` and the app:
-   `c.view(view(c, this))`.
-4. **The render branch comes first.** A called app that returns arrives with
+2. **Every field is part of the model.** ABAP keeps a `PROTECTED` attribute out
+   of it; a JavaScript field with an initial value is always bound.
+3. **The render branch comes first.** A called app that returns arrives with
    `c.isDisplay` *and* its event name set; `if (c.isDisplay) … else if
    (c.eventName === …)` keeps the two apart.
-
-### What the facade does not have yet
-
-`c` covers what 39 of the 129 samples use; six more need only a small
-adaptation (a structure's components bound relatively inside
-`binding="${c.bind("s")}"`, as in `Z2UI5_CL_SMP_APP_488`). The rest need
-parts of `z2ui5_if_client` the facade does not wrap yet - above all
-`follow_up_action( )` (47 samples), then `popover_display( )`, `get( )`, and
-the options of `_bind( )`, `_event( )` and `message_box_display( )`.
-
-Until it does, every one of them is reachable through `c.raw`, the transpiled
-`z2ui5_if_client` - asynchronous and with ABAP-typed arguments, as
-`Z2UI5_CL_SMP_APP_125` shows.
