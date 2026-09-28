@@ -18,16 +18,16 @@ defineApp("Z2UI5_CL_SMP_APP_493", class {
               .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
       const page = view.ele("Shell")
           .ele("Page")
-              .a({ n: "title",          v: "cap2UI5 - Basics I - Hello World, the Smallest App" })
+              .a({ n: "title",          v: "abap2UI5 - Basics I - Hello World, the Smallest App" })
               .a({ n: "showNavButton",  b: client.check_app_prev_stack() })
               .a({ n: "navButtonPress", v: client._event_nav_app_leave() });
 
       page.tag("MessageStrip")
-          .a({ n: "text",     v: "The whole app is what you see below: a class handed to defineApp( ), " +
-                                 "one main( ) method, a view built as XML and handed to client.view_display( ). " +
-                                 "cap2UI5 calls main( ) on every roundtrip - here only the display matters, " +
-                                 "which is what check_on_navigated( ) asks: true on the first start and whenever " +
-                                 "the app is shown again. Copy this file as the starting point for your own app." })
+          .a({ n: "text",     v: "The whole app is what you see below: a class implementing z2ui5_if_app, " +
+                     "one main( ) method, a view built as XML and handed to client->view_display( ). " +
+                     "abap2UI5 calls main( ) on every roundtrip - here only the display matters, " +
+                     "which is what check_on_navigated( ) asks: true on the first start and whenever " +
+                     "the app is shown again. Copy this class as the starting point for your own app." })
           .a({ n: "type",     v: "Information" })
           .a({ n: "showIcon", b: true })
           .a({ n: "class",    v: "sapUiSmallMargin" });

@@ -1,0 +1,106 @@
+// @keywords binding path only bare path _bind_path expression binding sorter binding info composed raw string
+// @summary _bind_path( ) hands you the model PATH of an attribute instead of {/PATH}: the piece a composed expression binding, a sorter or a bindElement needs.
+// @origin abap2UI5/samples src/z2ui5_cl_smp_app_508.clas.abap
+//
+// `client-&gt;_bind( quantity )` returns `{/QUANTITY}` - a complete property
+// binding, ready for a view attribute. Some attributes need the PATH alone:
+// an expression that combines it with a comparison, a binding-info object
+// that adds a sorter or a formatter, a bindElement. `client-&gt;_bind_path(
+// quantity )` returns `/QUANTITY` for exactly that - byte for byte what
+// `_bind( val = quantity path = abap_true )` returns, under a name that
+// says what it does. It registers the attribute like every bind: a path
+// the view names must be in the model, or the client renders nothing.
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+
+const ty_s_row = {
+  product: "",
+  stock:   0,
+};
+
+defineApp("Z2UI5_CL_SMP_APP_508", class {
+
+  t_row = t.table(ty_s_row);
+
+  quantity = 0;
+
+  main(client) {
+
+    this.client = client;
+    if (client.check_on_init()) {
+
+      this.quantity = 120;
+      this.t_row    = [ { product: "Monitor 27\"",  stock: 5 },
+                          { product: "Headset",      stock: 9 },
+                          { product: "Keyboard",     stock: 71 },
+                          { product: "Notebook 15\"", stock: 12 } ];
+      this.view_display();
+
+    } else if (client.check_on_navigated()) {
+      this.view_display();
+    }
+
+  }
+
+  view_display() {
+
+    const view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "View", ns: "mvc" })
+            .a({ n: "displayBlock", v: "true" })
+            .a({ n: "height",       v: "100%" })
+            .a({ n: "xmlns",        v: "sap.m" })
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" })
+            .a({ n: "xmlns:form",   v: "sap.ui.layout.form" });
+
+    const page = view.ele("Shell")
+        .ele("Page")
+            .a({ n: "title",          v: "abap2UI5 - Binding - Path Only (_bind_path)" })
+            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
+            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
+
+    page.tag("MessageStrip")
+        .a({ n: "text",     v: "_bind( ) returns the finished binding string; _bind_path( ) returns the bare path for the " +
+                   "places that compose their own binding string: the expression that colours the status " +
+                   "below, and the items binding of the list, which adds a sorter to the path. Change the " +
+                   "quantity and press Enter to see the expression re-evaluate on the client." })
+        .a({ n: "type",     v: "Information" })
+        .a({ n: "showIcon", b: true })
+        .a({ n: "class",    v: "sapUiSmallMargin" });
+
+    const form = page.ele({ n: "SimpleForm", ns: "form" })
+        .a({ n: "title",    v: "One attribute, two spellings" })
+        .a({ n: "editable", b: true })
+        .ele({ n: "content", ns: "form" });
+
+    form.tag("Label")
+        .a({ n: "text", v: "quantity, bound with _bind( ) - the full binding" });
+    form.tag("Input")
+        .a({ n: "value",       v: this.client._bind("quantity") })
+        .a({ n: "description", t: this.client._bind("quantity") });
+
+    // the bare path inside an expression binding: the string is composed in
+    // ABAP, and the path in it comes from _bind_path( ) rather than being
+    // written by hand - a hand-written path is not in the model
+    form.tag("Label")
+        .a({ n: "text", v: "the same attribute inside an expression - needs the bare path" });
+    form.tag("ObjectStatus")
+        .a({ n: "text",  v: `{= \${${this.client._bind_path("quantity")}} > 100 ? 'more than 100 in stock' : 'running low' }` })
+        .a({ n: "state", v: `{= \${${this.client._bind_path("quantity")}} > 100 ? 'Success' : 'Warning' }` });
+    form.tag("Text")
+        .a({ n: "text", t: `_bind_path( quantity ) returned ${this.client._bind_path("quantity")}` });
+
+    // the bare path of a table inside a binding-info object: the sorter is
+    // client-side, the path still names a bound attribute
+    form.tag("Label")
+        .a({ n: "text", v: "a table path with a sorter added - needs the bare path" });
+    form.ele("List")
+        .a({ n: "items", v: `{ path: '${this.client._bind_path("t_row")}', sorter: { path: 'PRODUCT' }, templateShareable: false }` })
+        .tag("StandardListItem")
+            .a({ n: "title", v: "{PRODUCT}" })
+            .a({ n: "info",  v: "{STOCK} in stock" });
+    form.tag("Text")
+        .a({ n: "text", t: `_bind_path( t_row ) returned ${this.client._bind_path("t_row")} - the list is sorted by product on the client` });
+
+    this.client.view_display(view.stringify());
+
+  }
+});

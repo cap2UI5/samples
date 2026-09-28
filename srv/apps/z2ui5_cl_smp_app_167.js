@@ -18,13 +18,13 @@ defineApp("Z2UI5_CL_SMP_APP_167", class {
             .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a({ n: "title",          v: "cap2UI5 - Event - Extra Arguments with t_arg" })
+            .a({ n: "title",          v: "abap2UI5 - Event - Extra Arguments with t_arg" })
             .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
             .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
         .a({ n: "text",     v: "This sample shows how to pass extra arguments to an event via t_arg - fixed " +
-                               "values, model values, or client-side expressions - and read them in the backend." })
+                   "values, model values, or client-side expressions - and read them in the backend." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });
@@ -74,6 +74,7 @@ defineApp("Z2UI5_CL_SMP_APP_167", class {
     switch (client.get_event()) {
       case "EVENT_FIX_VAL": case "EVENT_MODEL_VALUE": case "SOURCE_PROPERTY_TEXT": case "EVENT_PROPERTY_VALUE": case "PARENT_PROPERTY_ID":
         client.message_box_display(`backend event: ${client.get_event_arg()}`);
+        break;
     }
 
   }

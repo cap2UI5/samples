@@ -1,15 +1,19 @@
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_489.clas.abap
-//
 // Input page called by z2ui5_cl_smp_app_488. It returns to its caller with
-// client.nav_app_leave( { event, r_data } ) - handing back an event name and
-// the entered data without knowing which app called it (no get_app_prev( ),
-// no look at the caller's fields). This app is a hidden helper (never listed
-// on its own in the overview).
+// client->nav_app_leave( event = ... r_data = ... ) - handing back an event
+// name and the entered data without knowing which app called it (no
+// get_app_prev( ), no cast to the caller's class). This app is a hidden
+// helper (never listed on its own in the overview).
 import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+
+const ty_s_result = {
+  product:  "",
+  quantity: "",
+};
 
 defineApp("Z2UI5_CL_SMP_APP_489", class {
 
-  s_result = { product: "", quantity: "" };            // ty_s_result
+  s_result = ty_s_result;
 
   main(client) {
 
@@ -45,14 +49,14 @@ defineApp("Z2UI5_CL_SMP_APP_489", class {
             .a({ n: "xmlns:layout", v: "sap.ui.layout" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a({ n: "title",          v: "cap2UI5 - Navigation - Data Input App" })
+            .a({ n: "title",          v: "abap2UI5 - Navigation - Data Input App" })
             .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
             .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
         .a({ n: "text",     v: "Change the data and return: 'confirm' leaves with event DATA_CONFIRMED plus the " +
-                               "entered data as r_data, 'cancel' leaves with event DATA_CANCELLED and no data. " +
-                               "The nav-back button of the page leaves without an event." })
+                   "entered data as r_data, 'cancel' leaves with event DATA_CANCELLED and no data. " +
+                   "The nav-back button of the page leaves without an event." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });
@@ -88,5 +92,4 @@ defineApp("Z2UI5_CL_SMP_APP_489", class {
     this.client.view_display(view.stringify());
 
   }
-
 });

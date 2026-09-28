@@ -29,7 +29,7 @@ defineApp("Z2UI5_CL_SMP_APP_011", class {
             .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a({ n: "title",          v: "cap2UI5 - Table - Editable Cells, Add and Delete Rows" })
+            .a({ n: "title",          v: "abap2UI5 - Table - Editable Cells, Add and Delete Rows" })
             .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
             .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() })
             .a({ n: "id",             v: "test2" });

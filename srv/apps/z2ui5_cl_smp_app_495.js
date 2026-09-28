@@ -4,9 +4,14 @@
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_495.clas.abap
 import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
 
+const ty_s_step = {
+  no:    "",
+  check: "",
+};
+
 defineApp("Z2UI5_CL_SMP_APP_495", class {
 
-  t_log = t.table({ no: "", check: "" });
+  t_log = t.table(ty_s_step);
 
   main(client) {
 
@@ -35,8 +40,7 @@ defineApp("Z2UI5_CL_SMP_APP_495", class {
 
   log_step(val) {
 
-    // a read of t_log is a copy: the table with the new row is written back whole
-    this.t_log = [...this.t_log, { no: String(this.t_log.length + 1), check: val }];
+    this.t_log = [...this.t_log, { no: `${this.t_log.length + 1}`, check: val }];
 
   }
 
@@ -50,17 +54,17 @@ defineApp("Z2UI5_CL_SMP_APP_495", class {
             .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a({ n: "title",          v: "cap2UI5 - Basics III - Lifecycle: Init, Event, Navigated" })
+            .a({ n: "title",          v: "abap2UI5 - Basics III - Lifecycle: Init, Event, Navigated" })
             .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
             .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
         .a({ n: "text",     v: "main( ) runs on every roundtrip - the three checks tell it what the " +
-                               "roundtrip is about. The list logs each call, and it survives them all: " +
-                               "every field is serialized between the roundtrips, so the app " +
-                               "keeps its state without a table of its own. Press Log - only the model is pushed, " +
-                               "the view is not rebuilt. Call the sub-app and come back with its back " +
-                               "button - that is the roundtrip check_on_navigated( ) answers." })
+                   "roundtrip is about. The list logs each call, and it survives them all: " +
+                   "every public attribute is serialized between the roundtrips, so the app " +
+                   "keeps its state without a database. Press Log - only the model is pushed, " +
+                   "the view is not rebuilt. Call the sub-app and come back with its back " +
+                   "button - that is the roundtrip check_on_navigated( ) answers." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });

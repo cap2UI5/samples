@@ -3,3 +3,7 @@ node_modules/
 *.sqlite-*
 *.log
 .DS_Store
+
+# the differential test's transpiled originals and open-abap-core (scripts/originals.mjs)
+test/.originals/
+.deps/

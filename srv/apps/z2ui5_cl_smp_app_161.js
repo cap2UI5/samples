@@ -67,13 +67,13 @@ defineApp("Z2UI5_CL_SMP_APP_161", class {
             .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
     const page = view.ele("Shell")
         .ele("Page")
-            .a({ n: "title",          v: "cap2UI5 - Popup - Dialog inside a Dialog" })
+            .a({ n: "title",          v: "abap2UI5 - Popup - Dialog inside a Dialog" })
             .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
             .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
         .a({ n: "text",     v: "This sample opens a popup from a button and then chains to a second popup " +
-                               "from within the first one." })
+                   "from within the first one." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });
@@ -119,5 +119,4 @@ defineApp("Z2UI5_CL_SMP_APP_161", class {
     this.on_event();
 
   }
-
 });

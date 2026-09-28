@@ -12,13 +12,18 @@
     "cap2ui5": "^0.2.0"
   },
   "devDependencies": {
+    "@abaplint/transpiler-cli": "2.13.91",
     "@cap-js/cds-test": "^1.0.2",
     "fast-xml-parser": "^5.11.1"
   },
   "scripts": {
     "start": "cds-serve",
     "watch": "cds watch",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "generate": "node scripts/generate.mjs",
+    "check:generated": "node scripts/generate.mjs --check",
+    "originals": "node scripts/originals.mjs",
+    "differential": "node scripts/originals.mjs && node --test test/differential.mjs"
   },
   "cds": {
     "requires": {
