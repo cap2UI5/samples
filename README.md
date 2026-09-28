@@ -14,7 +14,8 @@ calls it: `client->check_app_prev_stack( )` is
 > which is not on npm yet (the client under its ABAP names and the view
 > builder are in its `Unreleased` changelog). Until it is, a plain
 > `npm install` answers `ETARGET`; install the plugin packed from a cap2UI5
-> checkout instead, which brings the other dependencies along:
+> checkout instead, which brings the other dependencies along - CI does the
+> same with cap2UI5's `main`:
 >
 > ```bash
 > (cd ../cap2UI5 && scripts/assemble-runtime.sh --package 1.145.0 && npm install \
