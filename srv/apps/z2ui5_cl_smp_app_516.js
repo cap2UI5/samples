@@ -2,7 +2,7 @@
 // @summary Sets the HTML inputmode of an Input through the bound inputMode property of z2ui5.cc.InputExt - the keyboard layout is model data, not an action.
 // @docs https://abap2ui5.github.io/docs/cookbook/browser_interaction/soft_keyboard
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_516.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_516", class {
 

@@ -2,7 +2,7 @@
 // @summary The URL policy of a MessagePopover: which links it will follow and which it refuses, and why the default is the strict one.
 // @docs https://abap2ui5.github.io/docs/cookbook/translation_messages/message
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_474.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_474", class {
 

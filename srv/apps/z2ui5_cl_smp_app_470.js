@@ -12,7 +12,7 @@
 // popup's relative bindings - including its component list's aggregation binding -
 // resolve against the selected product. The row index arrives as the event arg
 // (the pressed control's binding-context path).
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_item = {
   name: "",

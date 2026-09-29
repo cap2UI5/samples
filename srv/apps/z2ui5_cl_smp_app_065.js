@@ -2,7 +2,7 @@
 // @summary A nested view: nest_view_display renders a second view inside the first, and shows which model refresh reaches it.
 // @docs https://abap2ui5.github.io/docs/cookbook/view/nested_views
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_065.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_065", class {
 

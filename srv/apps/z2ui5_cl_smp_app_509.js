@@ -9,7 +9,7 @@
 // a list binds to the array and a text to a member, and no ABAP structure
 // has to mirror keys that may not even be valid ABAP names. Outbound only:
 // the client sends nothing back into that node.
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_509", class {
 

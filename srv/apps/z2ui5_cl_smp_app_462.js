@@ -2,7 +2,7 @@
 // @summary A tree inside a dialog, including which nodes stay expanded when the popup is opened again.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/trees
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_462.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_node_level3 = {
   text: "",

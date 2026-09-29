@@ -1,7 +1,7 @@
 // @keywords menu menuitem popover button messagetoast require module
 // @summary A Menu opened as a popover from a Button, whose items call a UI5 module loaded with core:require, so the click is answered in the frontend.
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_163.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_163", class {
 

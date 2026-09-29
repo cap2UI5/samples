@@ -11,7 +11,7 @@
 // to ONE slot - cs_view-nested or cs_view-nested2 - so the focus is looked
 // for in the view the app meant and nowhere else: a slot that is not open
 // answers with nothing instead of the first match somewhere else.
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_510", class {
 

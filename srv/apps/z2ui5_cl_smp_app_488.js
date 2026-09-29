@@ -9,7 +9,7 @@
 // called it. On return this app enters main( ) via check_on_navigated( ) and
 // reads both from client->get( ): the event name from -event, the payload as a
 // data reference from -r_event_data.
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_488", class {
 

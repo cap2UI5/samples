@@ -2,7 +2,7 @@
 // @summary Switches the page of a NavContainer and the tab of an IconTabBar by ID, so navigation inside a view costs no roundtrip.
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/frontend
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_088.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_088", class {
 

@@ -2,7 +2,7 @@
 // @summary The smallest app that runs: one class, one view_display( ), a Page with a title - the shape every other sample starts from.
 // @docs https://abap2ui5.github.io/docs/get_started/hello_world https://abap2ui5.github.io/docs/cookbook/view/definition https://abap2ui5.github.io/docs/cookbook/expert_more/snippets https://abap2ui5.github.io/docs/tutorials/walkthrough/step-1
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_493.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_493", class {
 

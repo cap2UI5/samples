@@ -2,7 +2,7 @@
 // @summary Writes to the browser's local and session storage and reads it back, so a value survives a reload without any state in the backend.
 // @docs https://abap2ui5.github.io/docs/cookbook/browser_interaction/clipboard
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_327.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 // Both fields are strings on purpose. The value round-trips through the
 // browser and back through the storage, so whatever sits under the key is

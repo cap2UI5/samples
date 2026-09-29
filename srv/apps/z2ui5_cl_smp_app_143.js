@@ -2,7 +2,7 @@
 // @summary Keeps the active sap.ui.table column filters across a view model update, through the abap2UI5 uitableext custom control - without it they are reset.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/tables
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_143.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_data = {
   field1: "",

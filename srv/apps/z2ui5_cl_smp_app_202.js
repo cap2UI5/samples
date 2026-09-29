@@ -2,7 +2,7 @@
 // @summary Drives a Wizard from the backend: setting the next step and discarding progress by ID, which is how a branching wizard is steered.
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/frontend
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_202.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_202", class {
 

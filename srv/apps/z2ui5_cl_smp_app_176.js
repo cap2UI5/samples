@@ -2,7 +2,7 @@
 // @summary XML templating inside a nested view: the generated content is built where the sub view is rendered.
 // @docs https://abap2ui5.github.io/docs/cookbook/view/nested_views https://abap2ui5.github.io/docs/cookbook/view/xml_templating
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_176.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_data = {
   name: "",

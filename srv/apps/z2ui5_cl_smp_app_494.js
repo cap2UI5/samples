@@ -2,7 +2,7 @@
 // @summary Binds a class attribute to an Input with _bind( ), so what the user types is in the ABAP variable on the next roundtrip - a Text shows it back and a MessageBox confirms the roundtrip.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/binding https://abap2ui5.github.io/docs/tutorials/walkthrough/step-4
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_494.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_494", class {
 

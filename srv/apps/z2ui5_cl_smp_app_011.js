@@ -2,7 +2,7 @@
 // @summary An editable table: input cells, adding and deleting rows, multi-select and a toolbar over them.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/tables https://abap2ui5.github.io/docs/tutorials/walkthrough/step-8 https://abap2ui5.github.io/docs/tutorials/walkthrough/step-10
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_011.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_011", class {
 

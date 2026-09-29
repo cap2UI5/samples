@@ -2,7 +2,7 @@
 // @summary Puts the screen texts in the class's own text elements instead of an i18n file, so SE63 translates them and the app shows them in the logon language.
 // @docs https://abap2ui5.github.io/docs/cookbook/translation_messages/translation_i18n
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_519.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_519", class {
 

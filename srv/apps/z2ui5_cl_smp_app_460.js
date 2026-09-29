@@ -2,7 +2,7 @@
 // @summary A nested ABAP table rendered as a sap.m.Tree - the hierarchy comes from the data, not from the view.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/trees
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_460.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_node_level3 = {
   text: "",

@@ -1,19 +1,48 @@
 {
-  "name": "cap2ui5-samples",
-  "private": true,
-  "description": "The abap2UI5 samples as cap2UI5 apps: plain JavaScript classes in a CAP project, views built with ViewBuilder.",
+  "name": "@cap2ui5/samples",
+  "version": "0.1.0",
+  "description": "abap2UI5's samples as cap2UI5 apps: add the package to a CAP project and they run beside its own apps. Every sample a plain JavaScript class, translated from its ABAP original line for line.",
+  "keywords": [
+    "cap",
+    "cds",
+    "sap",
+    "ui5",
+    "sapui5",
+    "abap2ui5",
+    "cap2ui5",
+    "samples"
+  ],
+  "homepage": "https://github.com/cap2UI5/samples#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cap2UI5/samples.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cap2UI5/samples/issues"
+  },
+  "license": "MIT",
   "type": "module",
+  "files": [
+    "srv/apps",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "cap2ui5": {
+    "apps": "srv/apps"
+  },
   "engines": {
     "node": ">=22"
   },
-  "dependencies": {
-    "@cap-js/sqlite": "^3",
-    "@sap/cds": "^10",
-    "cap2ui5": "^0.2.0"
+  "peerDependencies": {
+    "@cap2ui5/cds-plugin": "^0.3.0"
   },
   "devDependencies": {
     "@abaplint/transpiler-cli": "2.13.91",
     "@cap-js/cds-test": "^1.0.2",
+    "@cap-js/sqlite": "^3",
+    "@cap2ui5/cds-plugin": "^0.3.0",
+    "@sap/cds": "^10",
     "fast-xml-parser": "^5.11.1"
   },
   "scripts": {
@@ -23,7 +52,8 @@
     "generate": "node scripts/generate.mjs",
     "check:generated": "node scripts/generate.mjs --check",
     "originals": "node scripts/originals.mjs",
-    "differential": "node scripts/originals.mjs && node --test test/differential.mjs"
+    "differential": "node scripts/originals.mjs && node --test test/differential.mjs",
+    "consumer-test": "node scripts/consumer-test.mjs"
   },
   "cds": {
     "requires": {

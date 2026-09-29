@@ -22,7 +22,7 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { abap2js, Abap2jsError } from "cap2ui5";
+import { abap2js, Abap2jsError } from "@cap2ui5/cds-plugin";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = process.argv.slice(2);

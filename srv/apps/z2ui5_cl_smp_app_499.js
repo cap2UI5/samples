@@ -33,7 +33,7 @@
 // z2ui5_cl_smp_app_468 and z2ui5_cl_smp_app_480. Replaces the former
 // z2ui5_cl_smp_app_322, which pushed a suffix past the UI5 HashChanger and
 // had to reach for raw JavaScript to step back.
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_499", class {
 

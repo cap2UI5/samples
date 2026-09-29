@@ -13,7 +13,7 @@
 //    its enabled = false and becomes editable
 //  - omit_initial_paths = MAXVALUE: only that column is omitted, the
 //    boolean still travels, and both rows render as intended
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_row = {
   name:     "",

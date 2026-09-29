@@ -2,7 +2,7 @@
 // @summary Lays a page out with FlexBox and custom CSS classes - tiles, panels and a QuickView popover, all from the view chain.
 // @docs https://abap2ui5.github.io/docs/cookbook/view/definition
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_255.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_255", class {
 

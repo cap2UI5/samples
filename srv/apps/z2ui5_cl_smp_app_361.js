@@ -1,7 +1,7 @@
 // @keywords logoff signout icf session end fiori launchpad
 // @summary Ends the session from the client - the logoff an ICF session or a Fiori launchpad needs, triggered as a follow-up action.
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_361.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_361", class {
 

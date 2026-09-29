@@ -2,7 +2,7 @@
 // @summary ABAP DATS and TIMS strings in the view: the conversion in both directions, including what an initial 00000000 has to become.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/formatter
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_450.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_450", class {
 

@@ -2,7 +2,7 @@
 // @summary Formats amounts with sap.ui.model.type.Currency, so decimals and leading zeros follow the currency rather than the ABAP field.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/formatter
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_067.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_067", class {
 

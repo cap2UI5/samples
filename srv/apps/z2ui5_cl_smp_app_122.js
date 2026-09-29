@@ -2,7 +2,7 @@
 // @summary Asks the frontend what it is: UI5 version, theme, operating system, browser and user agent, in one call.
 // @docs https://abap2ui5.github.io/docs/cookbook/device_capabilities/info
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_122.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_122", class {
 

@@ -10,7 +10,7 @@
 // restores this app from its draft and enters main( ) via
 // check_on_navigated( ) - the view must be rendered again there, or the
 // browser keeps showing the hub it navigated away from.
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_469", class {
 
