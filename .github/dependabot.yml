@@ -1,0 +1,27 @@
+# Monthly, grouped. The dependency that matters is the devDependency on
+# @cap2ui5/cds-plugin: while the plugin is 0.x a minor may change how apps are
+# written, and the samples are released in step with it. A bump of it opened
+# here runs the whole suite against the new plugin, so a plugin release that
+# breaks a sample shows up as a red pull request instead of in a project that
+# installs both. The peer range in package.json is moved by hand, with the
+# release that regenerates the samples.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      cap2ui5:
+        patterns: ["@cap2ui5/*"]
+      dependencies:
+        patterns: ["*"]
+        exclude-patterns: ["@cap2ui5/*"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]
