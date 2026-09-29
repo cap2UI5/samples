@@ -2,7 +2,7 @@
 // @summary Binds a form to a structure with INCLUDEs, so the included components are reachable under their own names on one flat level.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/binding
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_166.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_struc_incl = {
   incl_title:  "",

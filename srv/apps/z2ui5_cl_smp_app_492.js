@@ -2,7 +2,7 @@
 // @summary Navigates the browser to a same-domain URL with the location_reload front-end action, with a scratch input beside it to show what the reload takes with it.
 // @docs https://abap2ui5.github.io/docs/cookbook/browser_interaction/url_handling
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_492.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_492", class {
 

@@ -13,7 +13,7 @@
 // Needs abap2UI5 newer than 1.144.0 - check_queue_last is appended to
 // ty_s_event_control after that release; on an older framework the class
 // does not activate (unknown component of s_ctrl).
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_511", class {
 

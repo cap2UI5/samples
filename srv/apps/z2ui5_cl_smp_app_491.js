@@ -2,7 +2,7 @@
 // @summary Sets the browser tab's favicon at runtime, from an image the backend hands over as a data URI.
 // @docs https://abap2ui5.github.io/docs/cookbook/browser_interaction/title
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_491.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_491", class {
 

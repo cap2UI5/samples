@@ -2,7 +2,7 @@
 // @summary Sends a file to the browser as a download - an xstring encoded as base64, handed over as an attachment.
 // @docs https://abap2ui5.github.io/docs/cookbook/device_capabilities/upload_download
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_186.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_186", class {
 

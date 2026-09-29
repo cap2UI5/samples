@@ -10,7 +10,7 @@
 // `_bind( val = quantity path = abap_true )` returns, under a name that
 // says what it does. It registers the attribute like every bind: a path
 // the view names must be in the model, or the client renders nothing.
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_row = {
   product: "",

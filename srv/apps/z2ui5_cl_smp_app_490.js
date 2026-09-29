@@ -9,7 +9,7 @@
 // actions in order and awaits each build, so the anchor exists by the time
 // the popover opens. Also re-opens the popover TOGETHER with a view rebuild
 // on an event, and contrasts it with a popover alone (no view rebuild).
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_490", class {
 

@@ -2,7 +2,7 @@
 // @summary Copies text into the browser clipboard from the backend: a follow-up action carries the string, a toast confirms what landed there.
 // @docs https://abap2ui5.github.io/docs/cookbook/browser_interaction/clipboard
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_325.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_325", class {
 

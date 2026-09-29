@@ -2,7 +2,7 @@
 // @summary Jumps a Carousel to a page that was cloned from a bound template - addressed positionally as id/aggregation/index, the only way to reach a clone.
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/frontend
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_514.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 const ty_s_page = {
   title: "",

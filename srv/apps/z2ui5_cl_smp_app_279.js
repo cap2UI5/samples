@@ -2,7 +2,7 @@
 // @summary Refuses to leave an app with unsaved changes: the confirmation popup in front of nav_app_leave, and how the dirty flag gets there.
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/navigation/inner_app
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_279.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_279", class {
 

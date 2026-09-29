@@ -2,7 +2,7 @@
 // @summary Asks the browser for the device's position - latitude, longitude and altitude - and what happens when the user says no.
 // @docs https://abap2ui5.github.io/docs/cookbook/device_capabilities/geolocation
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_120.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_120", class {
 

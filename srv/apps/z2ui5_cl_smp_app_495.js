@@ -2,7 +2,7 @@
 // @summary The three questions main( ) asks - init, event, navigated - as one dispatcher, showing what survives a roundtrip and what a navigation does to it.
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/life_cycle https://abap2ui5.github.io/docs/cookbook/expert_more/snippets https://abap2ui5.github.io/docs/tutorials/walkthrough/step-3
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_495.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_step = {
   no:    "",

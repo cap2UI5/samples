@@ -2,7 +2,7 @@
 // @summary Every MessageBox type - confirm, warning, error, success, information - and what a custom action button changes about the answer.
 // @docs https://abap2ui5.github.io/docs/cookbook/translation_messages/message
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_382.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_382", class {
 

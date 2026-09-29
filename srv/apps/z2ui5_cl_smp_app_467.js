@@ -2,7 +2,7 @@
 // @summary The UI5 message model: validation messages carry the field they belong to, so the control shows the state and one list holds them all.
 // @docs https://abap2ui5.github.io/docs/cookbook/translation_messages/message
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_467.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_message = {
   message:        "",

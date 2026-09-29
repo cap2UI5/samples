@@ -2,7 +2,7 @@
 // @summary Opens and closes a Popover by ID (toggleBy), so the anchor decides and no roundtrip is needed.
 // @docs https://abap2ui5.github.io/docs/cookbook/popup_popover/popover https://abap2ui5.github.io/docs/cookbook/event_navigation/frontend
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_465.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_465", class {
 

@@ -1,7 +1,7 @@
 // @keywords color background conditional formatting style data attribute
 // @summary Colours single table cells from the backend: the row carries its colour as custom data and a stylesheet turns it into a background.
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_305.clas.abap
-import { defineApp, t, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_row = {
   title: "",

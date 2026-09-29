@@ -21,7 +21,7 @@
 // cs_event-app_state_set_active: an empty argument list switches it on, a
 // single space is how the event form says false. Consolidates the former z2ui5_cl_smp_app_321 (bookmark)
 // and z2ui5_cl_smp_app_323 (share) into one sample.
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_498", class {
 

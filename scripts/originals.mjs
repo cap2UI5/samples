@@ -33,7 +33,7 @@ const head = execFileSync("git", ["-C", checkout, "rev-parse", "HEAD"], { encodi
 if (head !== pin) throw new Error(`${checkout} is at ${head}, ABAP2UI5_SAMPLES_PIN says ${pin}`);
 
 // the transpiler the runtime was built with: its output is tied to the runtime
-const runtimeDir = path.dirname(require.resolve("@abap2ui5/node-runtime/package.json", { paths: [require.resolve("cap2ui5")] }));
+const runtimeDir = path.dirname(require.resolve("@abap2ui5/node-runtime/package.json", { paths: [require.resolve("@cap2ui5/cds-plugin")] }));
 const wanted = JSON.parse(fs.readFileSync(path.join(runtimeDir, "package.json"), "utf8")).abap2ui5?.transpiler;
 const have = JSON.parse(fs.readFileSync(require.resolve("@abaplint/transpiler-cli/package.json"), "utf8")).version;
 if (wanted && wanted !== have) {

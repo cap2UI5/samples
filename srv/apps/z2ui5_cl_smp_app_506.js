@@ -13,7 +13,7 @@
 // check_arg_literal quotes every argument of that wire as a string, so the
 // wire gives up expressions and carries data. Two buttons over the same
 // argument show both readings side by side.
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_506", class {
 

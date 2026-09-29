@@ -4,7 +4,7 @@
 // name and the entered data without knowing which app called it (no
 // get_app_prev( ), no cast to the caller's class). This app is a hidden
 // helper (never listed on its own in the overview).
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 const ty_s_result = {
   product:  "",

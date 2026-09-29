@@ -2,7 +2,7 @@
 // @summary A NavContainer inside a dialog: several pages in one popup, with back and forward between them.
 // @docs https://abap2ui5.github.io/docs/cookbook/popup_popover/popup
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_170.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder } from "cap2ui5";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_170", class {
 
