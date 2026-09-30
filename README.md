@@ -21,7 +21,7 @@ original's comments and texts, all of them, as they are.
 ## Add them to your project
 
 In a CAP project with [`@cap2ui5/cds-plugin`](https://github.com/cap2UI5/cap2UI5)
-0.3 or later:
+0.4 or later:
 
 ```bash
 npm add -D @cap2ui5/samples
