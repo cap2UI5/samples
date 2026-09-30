@@ -16,7 +16,7 @@ defineApp("Z2UI5_CL_SMP_APP_067", class {
     if (client.check_on_init()) {
 
       this.numeric  = "000000000012";
-      this.amount   = "123456789.123";
+      this.amount   = 123456789.123;
       this.currency = "USD";
       this.view_display();
 

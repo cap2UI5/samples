@@ -21,7 +21,7 @@ defineApp("Z2UI5_CL_SMP_APP_027", class {
     if (client.check_on_init()) {
 
       this.product  = "tomato";
-      this.quantity = "500";
+      this.quantity = 500;
       this.input41  = "faasdfdfsaVIp";
       this.view_display();
 
