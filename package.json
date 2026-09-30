@@ -38,7 +38,7 @@
     "@cap2ui5/cds-plugin": "^0.4.0"
   },
   "devDependencies": {
-    "@abaplint/transpiler-cli": "2.13.91",
+    "@abaplint/transpiler-cli": "2.13.93",
     "@cap-js/cds-test": "^1.0.2",
     "@cap-js/sqlite": "^3",
     "@cap2ui5/cds-plugin": "^0.4.0",
