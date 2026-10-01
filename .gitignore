@@ -1,4 +1,6 @@
 node_modules/
+# no lockfile, as in cap2UI5: CI tests what an install gets today (.github/workflows/test.yml)
+package-lock.json
 *.sqlite
 *.sqlite-*
 *.log

@@ -19,7 +19,6 @@
     "z2ui5_cl_smp_app_167",
     "z2ui5_cl_smp_app_170",
     "z2ui5_cl_smp_app_173",
-    "z2ui5_cl_smp_app_176",
     "z2ui5_cl_smp_app_186",
     "z2ui5_cl_smp_app_189",
     "z2ui5_cl_smp_app_202",
@@ -69,10 +68,16 @@
     "z2ui5_cl_smp_app_515",
     "z2ui5_cl_smp_app_516",
     "z2ui5_cl_smp_app_518",
-    "z2ui5_cl_smp_app_519"
+    "z2ui5_cl_smp_app_519",
+    "z2ui5_cl_smp_app_533",
+    "z2ui5_cl_smp_app_534",
+    "z2ui5_cl_smp_app_535",
+    "z2ui5_cl_smp_app_536",
+    "z2ui5_cl_smp_app_537"
   ],
   "handwritten": {
     "z2ui5_cl_smp_app_011": "LOOP AT t_tab REFERENCE INTO writes through the row, and DELETE t_tab WHERE (abap2js: neither supported yet)",
+    "z2ui5_cl_smp_app_176": "ASSIGN mt_layout[ fname = ... ] TO FIELD-SYMBOL( ) writes through the row (abap2js: ASSIGN not supported yet)",
     "z2ui5_cl_smp_app_488": "ASSIGN ls_get-r_event_data->* TO FIELD-SYMBOL( ) (abap2js: not supported yet)"
   }
 }
