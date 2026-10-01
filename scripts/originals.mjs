@@ -12,7 +12,8 @@
 // The runtime's own transpiler output is what cap2UI5 hosts, so the original
 // runs on exactly the framework the translation runs on.
 //
-// Needs the network once: open-abap-core is cloned into .deps/.
+// Needs the network once: open-abap-core is fetched into .deps/ - at the commit
+// @abap2ui5/node-runtime was built against, which its package.json records.
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import { createRequire } from "node:module";
@@ -34,16 +35,33 @@ if (head !== pin) throw new Error(`${checkout} is at ${head}, ABAP2UI5_SAMPLES_P
 
 // the transpiler the runtime was built with: its output is tied to the runtime
 const runtimeDir = path.dirname(require.resolve("@abap2ui5/node-runtime/package.json", { paths: [require.resolve("@cap2ui5/cds-plugin")] }));
-const wanted = JSON.parse(fs.readFileSync(path.join(runtimeDir, "package.json"), "utf8")).abap2ui5?.transpiler;
+const built = JSON.parse(fs.readFileSync(path.join(runtimeDir, "package.json"), "utf8")).abap2ui5 ?? {};
+const wanted = built.transpiler;
 const have = JSON.parse(fs.readFileSync(require.resolve("@abaplint/transpiler-cli/package.json"), "utf8")).version;
 if (wanted && wanted !== have) {
   throw new Error(`@abaplint/transpiler-cli ${have} is installed, @abap2ui5/node-runtime was built with ${wanted} - ` +
     `npm i -D --save-exact @abaplint/transpiler-cli@${wanted}`);
 }
 
+// open-abap-core at the commit the runtime was built against (abap2ui5.openAbapCore),
+// so that the original is transpiled against the open-abap-core the runtime hosts
+// it on - a clone of HEAD would run the original on a newer one than the translation.
+// git clone takes no commit, so: init, fetch the one commit, check it out.
 const deps = path.join(ROOT, ".deps", "open-abap-core");
-if (!fs.existsSync(deps)) {
-  execFileSync("git", ["clone", "--depth", "1", "https://github.com/open-abap/open-abap-core", deps], { stdio: "inherit" });
+const core = "https://github.com/open-abap/open-abap-core";
+const checkedOut = fs.existsSync(deps) ? execFileSync("git", ["-C", deps, "rev-parse", "HEAD"], { encoding: "utf8" }).trim() : null;
+if (built.openAbapCore) {
+  if (checkedOut !== built.openAbapCore) {
+    fs.rmSync(deps, { recursive: true, force: true });
+    fs.mkdirSync(deps, { recursive: true });
+    execFileSync("git", ["init", "-q", deps], { stdio: "inherit" });
+    execFileSync("git", ["-C", deps, "fetch", "-q", "--depth", "1", core, built.openAbapCore], { stdio: "inherit" });
+    execFileSync("git", ["-C", deps, "checkout", "-q", "FETCH_HEAD"], { stdio: "inherit" });
+  }
+} else if (!checkedOut) {
+  // node-runtime 1.145.0 and older did not record the commit
+  console.warn("originals: @abap2ui5/node-runtime does not record its open-abap-core commit (abap2ui5.openAbapCore) - cloning HEAD");
+  execFileSync("git", ["clone", "--depth", "1", core, deps], { stdio: "inherit" });
 }
 
 const work = fs.mkdtempSync(path.join(os.tmpdir(), "originals-"));
