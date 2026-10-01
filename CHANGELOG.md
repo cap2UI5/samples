@@ -6,6 +6,11 @@ versions [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+- `npm run generate` (and its `--check`, the CI gate) refuses a module in
+  `srv/apps/` that `scripts/samples.json` does not list - such a module is
+  packed, served and started by the tests, but never held to its original by
+  the differential test, which reads `samples.json` - and names a listed
+  sample the checkout at the pin does not have instead of failing on the read.
 - The differential test transpiles the originals against open-abap-core at the
   commit `@abap2ui5/node-runtime` records in its `package.json`
   (`abap2ui5.openAbapCore`) instead of HEAD, so the original runs on the

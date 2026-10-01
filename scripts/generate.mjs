@@ -50,11 +50,26 @@ if (overlap.length) {
   console.error(`generate: ${overlap.join(", ")} listed as generated AND handwritten in scripts/samples.json`);
   process.exit(1);
 }
+// A module in srv/apps that samples.json does not list is packed, served and
+// started by the tests like any other - but never held to an original by the
+// differential test, which reads samples.json. So it is listed, or it goes.
+const orphans = fs.readdirSync(path.join(ROOT, "srv", "apps"))
+  .filter((f) => /^z2ui5_cl_smp_app_\d+\.js$/.test(f)).map((f) => f.replace(/\.js$/, ""))
+  .filter((n) => !generated.includes(n) && !(n in handwritten));
+if (orphans.length) {
+  console.error(`generate: srv/apps/${orphans.join(".js, srv/apps/")}.js not listed in scripts/samples.json - list it, or delete it`);
+  process.exit(1);
+}
 
 let failed = 0;
 let changed = 0;
 for (const name of generated) {
   const file = path.join(src, `${name}.clas.abap`);
+  if (!fs.existsSync(file)) {
+    console.error(`missing: src/${name}.clas.abap is not in abap2UI5/samples@${pin.slice(0, 7)} - is the name right?`);
+    failed++;
+    continue;
+  }
   let code;
   try {
     ({ code } = abap2js(fs.readFileSync(file, "utf8"), {

@@ -30,6 +30,11 @@ const pin = fs.readFileSync(path.join(ROOT, "ABAP2UI5_SAMPLES_PIN"), "utf8").tri
 const { generated, handwritten } = JSON.parse(fs.readFileSync(path.join(ROOT, "scripts", "samples.json"), "utf8"));
 const names = [...generated, ...Object.keys(handwritten)];
 
+if (!fs.existsSync(path.join(checkout, "src"))) {
+  console.error(`originals: no abap2UI5/samples checkout at ${checkout} - clone it and check out ${pin}:\n` +
+    `  git clone https://github.com/abap2UI5/samples ${checkout} && git -C ${checkout} checkout ${pin}`);
+  process.exit(1);
+}
 const head = execFileSync("git", ["-C", checkout, "rev-parse", "HEAD"], { encoding: "utf8" }).trim();
 if (head !== pin) throw new Error(`${checkout} is at ${head}, ABAP2UI5_SAMPLES_PIN says ${pin}`);
 
