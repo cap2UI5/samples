@@ -6,6 +6,14 @@ versions [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+- The pin moves to abap2UI5/samples `2e998ef` (2026-09-30). `Z2UI5_CL_SMP_APP_173`
+  is translated again from its reworked original - a metadata-driven table
+  and form with `template:with`, nested `template:repeat` and
+  `template:if/elseif/else`. `Z2UI5_CL_SMP_APP_176` gained a button that
+  re-renders only the nested view, through an `ASSIGN mt_layout[ … ] TO
+  FIELD-SYMBOL( )` abap2js refuses, so it is ported by hand from here on and
+  listed under `handwritten`. abap2UI5/samples has 138 samples at that
+  commit; the nine new ones (531 to 539) are not translated yet.
 - `npm run generate` (and its `--check`, the CI gate) refuses a module in
   `srv/apps/` that `scripts/samples.json` does not list - such a module is
   packed, served and started by the tests, but never held to its original by
