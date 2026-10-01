@@ -12,8 +12,16 @@ versions [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `template:if/elseif/else`. `Z2UI5_CL_SMP_APP_176` gained a button that
   re-renders only the nested view, through an `ASSIGN mt_layout[ … ] TO
   FIELD-SYMBOL( )` abap2js refuses, so it is ported by hand from here on and
-  listed under `handwritten`. abap2UI5/samples has 138 samples at that
-  commit; the nine new ones (531 to 539) are not translated yet.
+  listed under `handwritten`.
+- Five of the nine samples abap2UI5/samples added since, translated by
+  abap2js: `Z2UI5_CL_SMP_APP_535` (CustomData writeToDom),
+  `Z2UI5_CL_SMP_APP_536` (custom data on controls), `Z2UI5_CL_SMP_APP_537`
+  (expressions, formatters and literals in `t_arg`), and two helper apps -
+  `Z2UI5_CL_SMP_APP_533`, the wizard with page transitions
+  `Z2UI5_CL_SMP_APP_531` calls, and `Z2UI5_CL_SMP_APP_534`, the popup-as-app
+  `Z2UI5_CL_SMP_APP_532` calls. 76 of abap2UI5's 138 samples. The other four
+  wait for abap2js: 531 reads a constant of another class, 532 uses `NEW`
+  outside the navigation, 538 `VALUE #( OPTIONAL … )`, 539 `SPLIT`.
 - `npm run generate` (and its `--check`, the CI gate) refuses a module in
   `srv/apps/` that `scripts/samples.json` does not list - such a module is
   packed, served and started by the tests, but never held to its original by

@@ -23,6 +23,7 @@ const APPS = fs.readdirSync(path.join(ROOT, "srv/apps"))
 // nothing here either - the translation keeps what the original does.
 const NO_VIEW_ON_START = {
   Z2UI5_CL_SMP_APP_186: "its init branch fills the fields and displays no view, in ABAP as here",
+  Z2UI5_CL_SMP_APP_534: "a popup-as-app: it displays a dialog and no view of its own, in ABAP as here",
 };
 
 test("every sample starts, and its view is well-formed XML titled as in abap2UI5", async () => {
