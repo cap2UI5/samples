@@ -6,6 +6,12 @@ versions [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+- The differential test transpiles the originals against open-abap-core at the
+  commit `@abap2ui5/node-runtime` records in its `package.json`
+  (`abap2ui5.openAbapCore`) instead of HEAD, so the original runs on the
+  open-abap-core the translation runs on; a runtime that does not record it
+  (1.145.0) still gets HEAD, with a warning.
+
 ## [0.2.0] - 2026-09-30
 
 For `@cap2ui5/cds-plugin` 0.4.0, whose model carries only the fields an app

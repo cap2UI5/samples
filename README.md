@@ -176,8 +176,11 @@ sends, every other action and which app has the screen - today 71 samples in
 `Z2UI5_CL_SMP_APP_122` prints a number with `CONV string( )`, which keeps ABAP's
 trailing sign position (`"0 "`) and JavaScript's `String( )` does not.
 
-It needs the network once (open-abap-core is cloned into `.deps/`) and
-`@abaplint/transpiler-cli` at the runtime's version, a devDependency.
+It needs the network once (open-abap-core is fetched into `.deps/` at the
+commit @abap2ui5/node-runtime was built against - its `package.json` records
+it as `abap2ui5.openAbapCore` - so that the original runs on the open-abap-core
+the translation runs on) and `@abaplint/transpiler-cli` at the runtime's
+version, a devDependency.
 
 ## What a translated sample looks like
 
