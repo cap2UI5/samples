@@ -10,7 +10,9 @@ versions [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The peer range moves to `@cap2ui5/cds-plugin` ^0.5.0, the plugin that
   hosts `@abap2ui5/node-runtime` 1.147.0 (abap2UI5 1.147.0, the transpiler
-  2.14 output layout).
+  2.14 output layout). `@abaplint/transpiler-cli` moves to 2.14.3 with it,
+  the transpiler that runtime was built with: the differential test refuses
+  any other, and the v0.3.0 tag's first run died on 2.13.93.
 - The pin moves to abap2UI5/samples `2e998ef` (2026-09-30). `Z2UI5_CL_SMP_APP_173`
   is translated again from its reworked original - a metadata-driven table
   and form with `template:with`, nested `template:repeat` and
