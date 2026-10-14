@@ -6,6 +6,11 @@ versions [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-14
+
+- The peer range moves to `@cap2ui5/cds-plugin` ^0.5.0, the plugin that
+  hosts `@abap2ui5/node-runtime` 1.147.0 (abap2UI5 1.147.0, the transpiler
+  2.14 output layout).
 - The pin moves to abap2UI5/samples `2e998ef` (2026-09-30). `Z2UI5_CL_SMP_APP_173`
   is translated again from its reworked original - a metadata-driven table
   and form with `template:with`, nested `template:repeat` and
@@ -56,6 +61,7 @@ The first release: abap2UI5's samples as a package a CAP project adds.
   peer dependency - and the samples run beside the project's own apps: the
   package declares them for the plugin, `"cap2ui5": { "apps": "srv/apps" }`.
 
-[Unreleased]: https://github.com/cap2UI5/samples/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/cap2UI5/samples/compare/v0.3.0...HEAD
+[0.3.0]: https://www.npmjs.com/package/@cap2ui5/samples/v/0.3.0
 [0.2.0]: https://www.npmjs.com/package/@cap2ui5/samples/v/0.2.0
 [0.1.0]: https://www.npmjs.com/package/@cap2ui5/samples/v/0.1.0
