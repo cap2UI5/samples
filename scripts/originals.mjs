@@ -99,9 +99,14 @@ try {
   fs.rmSync(out, { recursive: true, force: true });
   fs.mkdirSync(out, { recursive: true });
   let n = 0;
+  // where the transpiler put the project's own classes: a folder per origin
+  // from @abaplint/transpiler 2.14 on (output/project/, the libs beside it as
+  // output/downport/ and output/open-abap-core/ - the layout the 1.147.0
+  // runtime records), the flat output/ before
+  const written = ["project", ""].map((d) => path.join(work, "output", d)).find((d) => fs.existsSync(d));
   for (const name of names) {
-    const file = path.join(work, "output", `${rename(name)}.clas.mjs`);
-    if (!fs.existsSync(file)) throw new Error(`the transpiler wrote no ${rename(name)}.clas.mjs`);
+    const file = path.join(written, `${rename(name)}.clas.mjs`);
+    if (!fs.existsSync(file)) throw new Error(`the transpiler wrote no ${rename(name)}.clas.mjs under ${path.relative(work, written) || "output"}/`);
     fs.copyFileSync(file, path.join(out, path.basename(file)));
     n++;
   }
