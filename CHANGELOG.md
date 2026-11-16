@@ -6,6 +6,8 @@ versions [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-16
+
 - The peer range moves to `@cap2ui5/cds-plugin` ^0.6.0, the plugin that
   hosts `@abap2ui5/node-runtime` 1.149.0 (abap2UI5 1.149.0); 0.3.0 does not
   install beside 0.6.0. `@abaplint/transpiler-cli` moves to 2.14.33 with it,
@@ -77,7 +79,8 @@ The first release: abap2UI5's samples as a package a CAP project adds.
   peer dependency - and the samples run beside the project's own apps: the
   package declares them for the plugin, `"cap2ui5": { "apps": "srv/apps" }`.
 
-[Unreleased]: https://github.com/cap2UI5/samples/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/cap2UI5/samples/compare/v0.4.0...HEAD
+[0.4.0]: https://www.npmjs.com/package/@cap2ui5/samples/v/0.4.0
 [0.3.0]: https://www.npmjs.com/package/@cap2ui5/samples/v/0.3.0
 [0.2.0]: https://www.npmjs.com/package/@cap2ui5/samples/v/0.2.0
 [0.1.0]: https://www.npmjs.com/package/@cap2ui5/samples/v/0.1.0
