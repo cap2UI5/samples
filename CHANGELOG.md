@@ -6,6 +6,20 @@ versions [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+- The peer range moves to `@cap2ui5/cds-plugin` ^0.6.0, the plugin that
+  hosts `@abap2ui5/node-runtime` 1.149.0 (abap2UI5 1.149.0); 0.3.0 does not
+  install beside 0.6.0. `@abaplint/transpiler-cli` moves to 2.14.33 with it,
+  the transpiler that runtime was built with - the differential test refuses
+  any other - and the originals are transpiled against open-abap-core
+  `f735eed`, the commit the runtime records. No sample changes: abap2js of
+  0.6.0 writes the 73 generated modules as they are, and all 76 still do what
+  their originals do on 1.149.0, 260 roundtrips without a difference. None
+  of them names one of the eight invisible custom controls abap2UI5 1.149.0
+  removed (`z2ui5.cc.Timer`, `Focus`, `Scrolling`, `Title`, `LPTitle`,
+  `Favicon`, `History`, `Info`) or `z2ui5_cl_util`; the companions the
+  samples do use (`InputExt`, `Tree`, `Geolocation`, `Storage`, `UITableExt`,
+  `Dirty`, `MessageManager`) are still in the frontend.
+
 ## [0.3.0] - 2026-10-14
 
 - The peer range moves to `@cap2ui5/cds-plugin` ^0.5.0, the plugin that
