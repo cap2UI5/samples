@@ -1,4 +1,4 @@
-// @keywords popup expand state hierarchy nodes
+// @keywords popup expand state hierarchy nodes popup_display
 // @summary A tree inside a dialog, including which nodes stay expanded when the popup is opened again.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/trees
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_462.clas.abap
@@ -42,6 +42,40 @@ defineApp("Z2UI5_CL_SMP_APP_462", class {
     } else if (client.check_on_event()) {
       this.on_event();
     }
+
+  }
+
+  view_display() {
+
+    const view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "View", ns: "mvc" })
+            .a({ n: "displayBlock", v: "true" })
+            .a({ n: "height",       v: "100%" })
+            .a({ n: "xmlns",        v: "sap.m" })
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
+
+    const page = view.ele("Shell")
+        .ele("Page")
+            .a({ n: "title",          v: "abap2UI5 - Tree - Inside a Dialog" })
+            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
+            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
+
+    page.tag("MessageStrip")
+        .a({ n: "text", v: "The button opens a Dialog whose content is a sap.m.Tree over a nested ABAP " +
+                   "table. Expand some nodes, close and reopen: the z2ui5.cc.Tree companion " +
+                   "preserves the expand state across the roundtrips." })
+        .a({ n: "type",     v: "Information" })
+        .a({ n: "showIcon", b: true })
+        .a({ n: "class",    v: "sapUiSmallMargin" });
+
+    page.ele("VBox")
+        .a({ n: "class", v: "sapUiSmallMargin" })
+        .tag("Button")
+            .a({ n: "press", v: this.client._event("OPEN_POPUP") })
+            .a({ n: "text",  v: "Open tree popup" })
+            .a({ n: "icon",  v: "sap-icon://tree" });
+
+    this.client.view_display(view.stringify());
 
   }
 
@@ -95,40 +129,6 @@ defineApp("Z2UI5_CL_SMP_APP_462", class {
             .a({ n: "text",  v: "Close" });
 
     this.client.popup_display(popup.stringify());
-
-  }
-
-  view_display() {
-
-    const view = z2ui5_cl_ui5_view_builder.factory()
-        .ele({ n: "View", ns: "mvc" })
-            .a({ n: "displayBlock", v: "true" })
-            .a({ n: "height",       v: "100%" })
-            .a({ n: "xmlns",        v: "sap.m" })
-            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
-
-    const page = view.ele("Shell")
-        .ele("Page")
-            .a({ n: "title",          v: "abap2UI5 - Tree - Inside a Dialog" })
-            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
-            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
-
-    page.tag("MessageStrip")
-        .a({ n: "text", v: "The button opens a Dialog whose content is a sap.m.Tree over a nested ABAP " +
-                   "table. Expand some nodes, close and reopen: the z2ui5.cc.Tree companion " +
-                   "preserves the expand state across the roundtrips." })
-        .a({ n: "type",     v: "Information" })
-        .a({ n: "showIcon", b: true })
-        .a({ n: "class",    v: "sapUiSmallMargin" });
-
-    page.ele("VBox")
-        .a({ n: "class", v: "sapUiSmallMargin" })
-        .tag("Button")
-            .a({ n: "press", v: this.client._event("OPEN_POPUP") })
-            .a({ n: "text",  v: "Open tree popup" })
-            .a({ n: "icon",  v: "sap-icon://tree" });
-
-    this.client.view_display(view.stringify());
 
   }
 });

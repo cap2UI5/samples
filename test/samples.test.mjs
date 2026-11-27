@@ -22,7 +22,6 @@ const APPS = fs.readdirSync(path.join(ROOT, "srv/apps"))
 // A sample whose ABAP original shows nothing on its first roundtrip shows
 // nothing here either - the translation keeps what the original does.
 const NO_VIEW_ON_START = {
-  Z2UI5_CL_SMP_APP_186: "its init branch fills the fields and displays no view, in ABAP as here",
   Z2UI5_CL_SMP_APP_534: "a popup-as-app: it displays a dialog and no view of its own, in ABAP as here",
 };
 
@@ -120,7 +119,7 @@ test("167 Event Arguments: fixed values and client-side expressions travel with 
     `press=".eB(['EVENT_MODEL_VALUE'], \${/MV_VALUE})"`,
     `press=".eB(['SOURCE_PROPERTY_TEXT'], \${$source>/text})"`,
     `submit=".eB(['EVENT_PROPERTY_VALUE'], \${$parameters>/value})"`,
-    `press=".eB(['PARENT_PROPERTY_ID'], $event.oSource.oParent.sId)"`,
+    `press=".eB(['PARENT_PROPERTY_ID'], $event.getSource().getParent().getId())"`,
   ]);
 
   const fix = await P({ app: APP, id: start.id, event: "EVENT_FIX_VAL", args: ["FIX_VAL"] });

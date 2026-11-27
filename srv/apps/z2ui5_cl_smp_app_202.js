@@ -8,6 +8,27 @@ defineApp("Z2UI5_CL_SMP_APP_202", class {
 
   next_step = "";
 
+  main(client) {
+
+    if (client.check_on_navigated()) {
+      this.view_display(client);
+    } else if (client.check_on_event("STEP22") || client.check_on_event("STEP23")) {
+
+      // the original wizard flow (discardProgress + setNextStep) as two
+      // generic whitelisted control calls - t_arg is positional:
+      // id, method, params (the step params are control ids; the view
+      // defaults to cs_view-main)
+      this.next_step = client.get_event();
+      client.follow_up_action({
+          val:   z2ui5_if_client.cs_event.control_by_id,
+          t_arg: [ "wiz", "discardProgress", "STEP2" ] });
+      client.follow_up_action({
+          val:   z2ui5_if_client.cs_event.control_by_id,
+          t_arg: [ "STEP2", "setNextStep", this.next_step ] });
+    }
+
+  }
+
   view_display(client) {
 
     let lr_view = z2ui5_cl_ui5_view_builder.factory()
@@ -61,7 +82,8 @@ defineApp("Z2UI5_CL_SMP_APP_202", class {
     const lr_wiz_step22 = lr_wizard.ele("WizardStep")
         .a({ n: "id",        v: "STEP22" })
         .a({ n: "title",     v: "STEP2.2" })
-        .a({ n: "validated", b: true });
+        .a({ n: "validated", b: true })
+        .a({ n: "nextStep",  v: "STEP3" });
 
     lr_wiz_step22.tag("MessageStrip")
         .a({ n: "text", v: "STEP22" });
@@ -69,12 +91,17 @@ defineApp("Z2UI5_CL_SMP_APP_202", class {
     const lr_wiz_step23 = lr_wizard.ele("WizardStep")
         .a({ n: "id",        v: "STEP23" })
         .a({ n: "title",     v: "STEP2.3" })
-        .a({ n: "validated", b: true });
+        .a({ n: "validated", b: true })
+        .a({ n: "nextStep",  v: "STEP3" });
 
     lr_wiz_step23.tag("MessageStrip")
         .a({ n: "text", v: "STEP23" });
 
+    // both branches join again here - in branching mode a step without a
+    // nextStep is the LAST one, so without the two links above this step
+    // could never be reached
     const lr_wiz_step3 = lr_wizard.ele("WizardStep")
+        .a({ n: "id",        v: "STEP3" })
         .a({ n: "title",     v: "STEP3" })
         .a({ n: "validated", b: true });
 
@@ -89,27 +116,6 @@ defineApp("Z2UI5_CL_SMP_APP_202", class {
     // describes it. Re-issuing the same call here is what makes the choice
     // survive a navigation back, a draft restore or any later redisplay.
     if (this.next_step !== "") {
-      client.follow_up_action({
-          val:   z2ui5_if_client.cs_event.control_by_id,
-          t_arg: [ "STEP2", "setNextStep", this.next_step ] });
-    }
-
-  }
-
-  main(client) {
-
-    if (client.check_on_navigated()) {
-      this.view_display(client);
-    } else if (client.check_on_event("STEP22") || client.check_on_event("STEP23")) {
-
-      // the original wizard flow (discardProgress + setNextStep) as two
-      // generic whitelisted control calls - t_arg is positional:
-      // id, method, params (the step params are control ids; the view
-      // defaults to cs_view-main)
-      this.next_step = client.get_event();
-      client.follow_up_action({
-          val:   z2ui5_if_client.cs_event.control_by_id,
-          t_arg: [ "wiz", "discardProgress", "STEP2" ] });
       client.follow_up_action({
           val:   z2ui5_if_client.cs_event.control_by_id,
           t_arg: [ "STEP2", "setNextStep", this.next_step ] });

@@ -1,4 +1,4 @@
-// @keywords dats tims conversion initial date 00000000 sy-datum
+// @keywords dats tims conversion initial date 00000000 sy-datum _bind_path
 // @summary ABAP DATS and TIMS strings in the view: the conversion in both directions, including what an initial 00000000 has to become.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/formatter
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_450.clas.abap
@@ -70,7 +70,7 @@ defineApp("Z2UI5_CL_SMP_APP_450", class {
                 .a({ n: "text", v: "DATS 20260720" })
             .tag("DatePicker")
                 .a({ n: "displayFormat", v: "long" })
-                .a({ n: "dateValue",     v: `{ path: '${this.client._bind({ val: "dats", path: true })}', ` +
+                .a({ n: "dateValue",     v: `{ path: '${this.client._bind_path("dats")}', ` +
                                 `formatter: 'Formatter.DateAbapDateToDateObject' }` })
                 .a({ n: "editable",      b: false })
             .tag("Label")
@@ -78,15 +78,15 @@ defineApp("Z2UI5_CL_SMP_APP_450", class {
             .tag("DatePicker")
                 .a({ n: "displayFormat", v: "long" })
                 .a({ n: "placeholder",   v: "no date" })
-                .a({ n: "dateValue",     v: `{ path: '${this.client._bind({ val: "dats_initial", path: true })}', ` +
+                .a({ n: "dateValue",     v: `{ path: '${this.client._bind_path("dats_initial")}', ` +
                                 `formatter: 'Formatter.DateAbapDateToDateObject' }` })
                 .a({ n: "editable",      b: false })
             .tag("Label")
                 .a({ n: "text", v: "DATS 20260720 + TIMS 134501" })
             .ele("DateTimePicker")
                 .a({ n: "editable",  v: "false" })
-                .a({ n: "dateValue", v: `{ parts: [{path: '${this.client._bind({ val: "dats", path: true })}'}, ` +
-                                          `{path: '${this.client._bind({ val: "tims", path: true })}'}], ` +
+                .a({ n: "dateValue", v: `{ parts: [{path: '${this.client._bind_path("dats")}'}, ` +
+                                          `{path: '${this.client._bind_path("tims")}'}], ` +
                                           `formatter: 'Formatter.DateAbapDateTimeToDateObject' }` });
 
     this.client.view_display(view.stringify());

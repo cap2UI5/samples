@@ -37,14 +37,6 @@ defineApp("Z2UI5_CL_SMP_APP_535", class {
 
   }
 
-  status_next() {
-
-    this.status = (this.status === "new" ? "shipped"
-        : this.status === "shipped" ? "delayed"
-        : "new");
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -193,6 +185,14 @@ defineApp("Z2UI5_CL_SMP_APP_535", class {
                     .a({ n: "text", v: "{STATUS}" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  status_next() {
+
+    this.status = (this.status === "new" ? "shipped"
+        : this.status === "shipped" ? "delayed"
+        : "new");
 
   }
 });

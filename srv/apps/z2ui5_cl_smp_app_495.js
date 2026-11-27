@@ -1,6 +1,6 @@
-// @keywords lifecycle roundtrip main dispatcher state serialize check_on_init check_on_event check_on_navigated
+// @keywords lifecycle roundtrip main dispatcher state serialize check_on_init check_on_event check_on_navigated nav_app_call
 // @summary The three questions main( ) asks - init, event, navigated - as one dispatcher, showing what survives a roundtrip and what a navigation does to it.
-// @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/life_cycle https://abap2ui5.github.io/docs/cookbook/expert_more/snippets https://abap2ui5.github.io/docs/tutorials/walkthrough/step-3
+// @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/life_cycle https://abap2ui5.github.io/docs/cookbook/expert_more/snippets https://abap2ui5.github.io/docs/tutorials/step-3
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_495.clas.abap
 import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
@@ -35,12 +35,6 @@ defineApp("Z2UI5_CL_SMP_APP_495", class {
       client.nav_app_call("Z2UI5_CL_SMP_APP_493");
 
     }
-
-  }
-
-  log_step(val) {
-
-    this.t_log = [...this.t_log, { no: `${this.t_log.length + 1}`, check: val }];
 
   }
 
@@ -88,6 +82,12 @@ defineApp("Z2UI5_CL_SMP_APP_495", class {
             .a({ n: "description", v: "call {NO}" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  log_step(val) {
+
+    this.t_log = [...this.t_log, { no: `${this.t_log.length + 1}`, check: val }];
 
   }
 });

@@ -1,12 +1,32 @@
 // @keywords argument parameter payload event data fixed value
 // @summary Sends extra arguments with an event (t_arg), so a handler knows which row, which value or which fixed payload it was called for.
-// @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/backend https://abap2ui5.github.io/docs/tutorials/walkthrough/step-6
+// @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/backend https://abap2ui5.github.io/docs/tutorials/step-6
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_167.clas.abap
 import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_167", class {
 
   mv_value = "";
+
+  main(client) {
+
+    this.client = client;
+    if (client.check_on_init()) {
+      this.mv_value = "my value";
+      this.view_display();
+    } else if (client.check_on_navigated()) {
+      this.view_display();
+    } else if (client.check_on_event()) {
+
+      switch (client.get_event()) {
+        case "EVENT_FIX_VAL": case "EVENT_MODEL_VALUE": case "SOURCE_PROPERTY_TEXT": case "EVENT_PROPERTY_VALUE": case "PARENT_PROPERTY_ID":
+          client.message_box_display(`backend event: ${client.get_event_arg()}`);
+          break;
+      }
+
+    }
+
+  }
 
   view_display() {
 
@@ -53,29 +73,10 @@ defineApp("Z2UI5_CL_SMP_APP_167", class {
         .a({ n: "submit",      v: this.client._event({ val: "EVENT_PROPERTY_VALUE", arg: "${$parameters>/value}" }) });
 
     page.tag("Button")
-        .a({ n: "press", v: this.client._event({ val: "PARENT_PROPERTY_ID", arg: "$event.oSource.oParent.sId" }) })
+        .a({ n: "press", v: this.client._event({ val: "PARENT_PROPERTY_ID", arg: "$event.getSource().getParent().getId()" }) })
         .a({ n: "text",  v: "PARENT_PROPERTY_ID" });
 
     this.client.view_display(view.stringify());
-
-  }
-
-  main(client) {
-
-    this.client = client;
-
-    if (client.check_on_init()) {
-      this.mv_value = "my value";
-      this.view_display();
-    } else if (client.check_on_navigated()) {
-      this.view_display();
-    }
-
-    switch (client.get_event()) {
-      case "EVENT_FIX_VAL": case "EVENT_MODEL_VALUE": case "SOURCE_PROPERTY_TEXT": case "EVENT_PROPERTY_VALUE": case "PARENT_PROPERTY_ID":
-        client.message_box_display(`backend event: ${client.get_event_arg()}`);
-        break;
-    }
 
   }
 });

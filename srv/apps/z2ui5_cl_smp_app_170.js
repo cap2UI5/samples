@@ -1,4 +1,4 @@
-// @keywords navcontainer dialog pages back forward
+// @keywords navcontainer dialog pages back forward icontabbar control_by_id popup_display
 // @summary A NavContainer inside a dialog: several pages in one popup, with back and forward between them.
 // @docs https://abap2ui5.github.io/docs/cookbook/popup_popover/popup
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_170.clas.abap
@@ -7,6 +7,72 @@ import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 defineApp("Z2UI5_CL_SMP_APP_170", class {
 
   mv_selected_key = "";
+
+  main(client) {
+
+    this.client = client;
+    if (client.check_on_navigated()) {
+      this.view_display();
+
+    } else if (client.check_on_event()) {
+      this.on_event();
+    }
+
+  }
+
+  view_display() {
+
+    const view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "View", ns: "mvc" })
+            .a({ n: "displayBlock", v: "true" })
+            .a({ n: "height",       v: "100%" })
+            .a({ n: "xmlns",        v: "sap.m" })
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
+    const page = view.ele("Shell")
+        .ele("Page")
+            .a({ n: "title",          v: "abap2UI5 - Popup - Navigate between Dialogs (NavContainer)" })
+            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
+            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
+
+    page.tag("MessageStrip")
+        .a({ n: "text",     v: "Open the dialog and pick its tabs: each tab switches the NavContainer inside the dialog " +
+                   "to another page, on the client - the select event calls the container's to method by id " +
+                   "(follow_up_action with cs_event-control_by_id), no roundtrip. The first page also opens a second " +
+                   "popup, whose button brings the first one back." })
+        .a({ n: "type",     v: "Information" })
+        .a({ n: "showIcon", b: true })
+        .a({ n: "class",    v: "sapUiSmallMargin" });
+
+    page.tag("Button")
+        .a({ n: "press", v: this.client._event("POPUP") })
+        .a({ n: "text",  v: "Open Popup..." });
+
+    this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    switch (this.client.get_event()) {
+      case "GOTO_2ND":
+        this.simple_popup2();
+        break;
+
+      case "BTN_OK_2ND":
+        this.client.popup_destroy();
+        this.simple_popup1();
+        break;
+
+      case "BTN_OK_1ND":
+        this.client.popup_destroy();
+        break;
+
+      case "POPUP":
+        this.simple_popup1();
+        break;
+    }
+
+  }
 
   simple_popup1() {
 
@@ -22,8 +88,8 @@ defineApp("Z2UI5_CL_SMP_APP_170", class {
 
     dialog.ele("IconTabBar")
         .a({ n: "select",      v: this.client.follow_up_action({ val:   this.client.cs_event.control_by_id,
-                                                                                         view:  this.client.cs_view.popup,
-                                                                                         t_arg: [ "NavCon", "to", "${$parameters>/selectedKey}" ] }) })
+                                                              view:  this.client.cs_view.popup,
+                                                              t_arg: [ "NavCon", "to", "${$parameters>/selectedKey}" ] }) })
         .a({ n: "expandable",  b: false })
         .a({ n: "expanded",    b: true })
         .a({ n: "headerMode",  v: "Inline" })
@@ -99,70 +165,6 @@ defineApp("Z2UI5_CL_SMP_APP_170", class {
                 .a({ n: "type",  v: "Emphasized" });
 
     this.client.popup_display(popup.stringify());
-
-  }
-
-  view_display() {
-
-    const view = z2ui5_cl_ui5_view_builder.factory()
-        .ele({ n: "View", ns: "mvc" })
-            .a({ n: "displayBlock", v: "true" })
-            .a({ n: "height",       v: "100%" })
-            .a({ n: "xmlns",        v: "sap.m" })
-            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
-    const page = view.ele("Shell")
-        .ele("Page")
-            .a({ n: "title",          v: "abap2UI5 - Popup - Navigate between Dialogs (NavContainer)" })
-            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
-            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
-
-    page.tag("MessageStrip")
-        .a({ n: "text",     v: "Press the button to open a dialog; from there a second popup can be opened and navigated " +
-                   "back to the first, demonstrating popup-to-popup navigation." })
-        .a({ n: "type",     v: "Information" })
-        .a({ n: "showIcon", b: true })
-        .a({ n: "class",    v: "sapUiSmallMargin" });
-
-    page.tag("Button")
-        .a({ n: "press", v: this.client._event("POPUP") })
-        .a({ n: "text",  v: "Open Popup..." });
-
-    this.client.view_display(view.stringify());
-
-  }
-
-  on_event() {
-
-    switch (this.client.get_event()) {
-      case "GOTO_2ND":
-        this.simple_popup2();
-        break;
-
-      case "BTN_OK_2ND":
-        this.client.popup_destroy();
-        this.simple_popup1();
-        break;
-
-      case "BTN_OK_1ND":
-        this.client.popup_destroy();
-        break;
-
-      case "POPUP":
-        this.simple_popup1();
-        break;
-    }
-
-  }
-
-  main(client) {
-
-    this.client = client;
-    if (client.check_on_navigated()) {
-      this.view_display();
-
-    } else if (client.check_on_event()) {
-      this.on_event();
-    }
 
   }
 });

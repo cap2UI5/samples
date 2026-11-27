@@ -38,36 +38,6 @@ defineApp("Z2UI5_CL_SMP_APP_026", class {
 
   }
 
-  popover_display(id) {
-
-    const view = z2ui5_cl_ui5_view_builder.factory()
-        .ele({ n: "FragmentDefinition", ns: "core" })
-            .a({ n: "xmlns",      v: "sap.m" })
-            .a({ n: "xmlns:core", v: "sap.ui.core" });
-    view.ele("Popover")
-        .a({ n: "title",     v: "Popover Title" })
-        .a({ n: "placement", t: this.placement })
-        .ele("footer")
-            .ele("OverflowToolbar")
-                .tag("ToolbarSpacer")
-                .tag("Button")
-                    .a({ n: "press", v: this.client._event("BUTTON_CANCEL") })
-                    .a({ n: "text",  v: "Cancel" })
-                .tag("Button")
-                    .a({ n: "press", v: this.client._event("BUTTON_CONFIRM") })
-                    .a({ n: "text",  v: "Confirm" })
-                    .a({ n: "type",  v: "Emphasized" })
-            .end()
-        .end()
-        .tag("Text")
-            .a({ n: "text", v: "make an input here:" })
-        .tag("Input")
-            .a({ n: "value", v: this.client._bind("input") });
-
-    this.client.popover_display({ xml: view.stringify(), by_id: id });
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -133,6 +103,36 @@ defineApp("Z2UI5_CL_SMP_APP_026", class {
                 .a({ n: "id",    v: "TEST" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  popover_display(id) {
+
+    const view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "FragmentDefinition", ns: "core" })
+            .a({ n: "xmlns",      v: "sap.m" })
+            .a({ n: "xmlns:core", v: "sap.ui.core" });
+    view.ele("Popover")
+        .a({ n: "title",     v: "Popover Title" })
+        .a({ n: "placement", t: this.placement })
+        .ele("footer")
+            .ele("OverflowToolbar")
+                .tag("ToolbarSpacer")
+                .tag("Button")
+                    .a({ n: "press", v: this.client._event("BUTTON_CANCEL") })
+                    .a({ n: "text",  v: "Cancel" })
+                .tag("Button")
+                    .a({ n: "press", v: this.client._event("BUTTON_CONFIRM") })
+                    .a({ n: "text",  v: "Confirm" })
+                    .a({ n: "type",  v: "Emphasized" })
+            .end()
+        .end()
+        .tag("Text")
+            .a({ n: "text", v: "make an input here:" })
+        .tag("Input")
+            .a({ n: "value", v: this.client._bind("input") });
+
+    this.client.popover_display({ xml: view.stringify(), by_id: id });
 
   }
 });

@@ -13,7 +13,8 @@ defineApp("Z2UI5_CL_SMP_APP_514", class {
 
   t_pages = t.table(ty_s_page);
 
-  // not bound - the index the backend last jumped to, counted from 1
+  // not bound - the page the carousel shows, counted from 1; the
+  // pageChanged event keeps it in step when the user swipes
   current = 0;
 
   main(client) {
@@ -26,54 +27,6 @@ defineApp("Z2UI5_CL_SMP_APP_514", class {
       this.view_display();
     } else if (client.check_on_event()) {
       this.on_event();
-    }
-
-  }
-
-  model_init() {
-
-    this.t_pages = [ { title: "Bicycle",  text: "The first page of the carousel." },
-                       { title: "Car",      text: "The second page - and the one the buttons below jump to." },
-                       { title: "Train",    text: "The third page." },
-                       { title: "Aircraft", text: "The fourth and last page." } ];
-    this.current = 1;
-
-  }
-
-  page_show(index) {
-
-    this.current = index;
-    // A page of this carousel is a CLONE of the aggregation template, and a
-    // clone has no id the backend can spell: UI5 mints it from the template
-    // id, the parent id and the position, and the parent id carries the view
-    // prefix assigned at runtime. So the item is addressed POSITIONALLY -
-    // `<control id>/<aggregation>/<index>`, 0-based - which the frontend
-    // resolves against the live aggregation. It is the equivalent of the UI5
-    // controller idiom oCarousel.setActivePage( oCarousel.getPages()[ i ] ).
-    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
-                              t_arg: [ "demoCarousel",
-                                               "setActivePage",
-                                               `demoCarousel/pages/${index - 1}` ] });
-
-  }
-
-  on_event() {
-
-    switch (this.client.get_event()) {
-
-      case "FIRST":
-        this.page_show(1);
-        break;
-
-      case "NEXT":
-        // wrap around at the end - the count is ABAP's, not the carousel's
-        this.page_show((this.current >= this.t_pages.length ? 1 : this.current + 1));
-        break;
-
-      case "LAST":
-        this.page_show(this.t_pages.length);
-        break;
-
     }
 
   }
@@ -119,10 +72,11 @@ defineApp("Z2UI5_CL_SMP_APP_514", class {
             .a({ n: "icon",  v: "sap-icon://open-command-field" });
 
     page.ele("Carousel")
-        .a({ n: "id",     v: "demoCarousel" })
-        .a({ n: "height", v: "20rem" })
-        .a({ n: "pages",  v: this.client._bind("t_pages") })
-        .a({ n: "class",  v: "sapUiSmallMargin" })
+        .a({ n: "id",          v: "demoCarousel" })
+        .a({ n: "height",      v: "20rem" })
+        .a({ n: "pages",       v: this.client._bind("t_pages") })
+        .a({ n: "class",       v: "sapUiSmallMargin" })
+        .a({ n: "pageChanged", v: this.client._event({ val: "PAGE_CHANGED", arg: "${$parameters>/activePages/0}" }) })
         .ele("pages")
             .ele("VBox")
                 .a({ n: "justifyContent", v: "Center" })
@@ -143,6 +97,63 @@ defineApp("Z2UI5_CL_SMP_APP_514", class {
     // survives in ABAP. Re-issuing the call from here - after the view that
     // will hold it - is what keeps the two in step across a rebuild.
     this.page_show(this.current);
+
+  }
+
+  on_event() {
+    let active;
+
+    switch (this.client.get_event()) {
+
+      case "FIRST":
+        this.page_show(1);
+        break;
+
+      case "NEXT":
+        // wrap around at the end - the count is ABAP's, not the carousel's
+        this.page_show((this.current >= this.t_pages.length ? 1 : this.current + 1));
+        break;
+
+      case "LAST":
+        this.page_show(this.t_pages.length);
+        break;
+
+      case "PAGE_CHANGED":
+        // swiped or jumped - activePages is 0-based, current counts from 1
+        active = this.client.get_event_arg();
+        if ([...active].every((c) => "0123456789".includes(c)) && active !== "") {
+          this.current = Number(active) + 1;
+        }
+        break;
+
+    }
+
+  }
+
+  page_show(index) {
+
+    this.current = index;
+    // A page of this carousel is a CLONE of the aggregation template, and a
+    // clone has no id the backend can spell: UI5 mints it from the template
+    // id, the parent id and the position, and the parent id carries the view
+    // prefix assigned at runtime. So the item is addressed POSITIONALLY -
+    // `<control id>/<aggregation>/<index>`, 0-based - which the frontend
+    // resolves against the live aggregation. It is the equivalent of the UI5
+    // controller idiom oCarousel.setActivePage( oCarousel.getPages()[ i ] ).
+    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
+                              t_arg: [ "demoCarousel",
+                                               "setActivePage",
+                                               `demoCarousel/pages/${index - 1}` ] });
+
+  }
+
+  model_init() {
+
+    this.t_pages = [ { title: "Bicycle",  text: "The first page of the carousel." },
+                       { title: "Car",      text: "The second page - and the one the buttons below jump to." },
+                       { title: "Train",    text: "The third page." },
+                       { title: "Aircraft", text: "The fourth and last page." } ];
+    this.current = 1;
 
   }
 });

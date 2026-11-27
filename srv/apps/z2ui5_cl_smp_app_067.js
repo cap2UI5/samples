@@ -1,4 +1,4 @@
-// @keywords amount decimals leading zeros number format
+// @keywords amount decimals leading zeros number format _bind_path
 // @summary Formats amounts with sap.ui.model.type.Currency, so decimals and leading zeros follow the currency rather than the ABAP field.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/formatter
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_067.clas.abap
@@ -23,8 +23,10 @@ defineApp("Z2UI5_CL_SMP_APP_067", class {
     } else if (client.check_on_navigated()) {
       this.view_display();
     } else if (client.check_on_event("BUTTON")) {
-      // the roundtrip IS the demo: the edited amounts travel back and re-render
-      this.view_display();
+      // the roundtrip is the point of this button: the edited values travel
+      // to the server and come back, and every formatter above renders them
+      // again from the model - no view_display( ) needed
+      client.message_toast_display(`Amount ${this.amount.toFixed(3)}, currency ${this.currency}`);
     }
 
   }
@@ -66,59 +68,35 @@ defineApp("Z2UI5_CL_SMP_APP_067", class {
             .tag("Label")
                 .a({ n: "text", v: "One field" })
             .tag("Input")
-                .a({ n: "value", v: `{ parts: [ '${this.client._bind({ val:  "amount",
-                                                 path: true })}', '${this.client._bind({
-                                                 val:  "currency",
-                                                 path: true })}'],  type: 'sap.ui.model.type.Currency' }` })
+                .a({ n: "value", v: `{ parts: [ '${this.client._bind_path("amount")}', '${this.client._bind_path("currency")}'],  type: 'sap.ui.model.type.Currency' }` })
             .tag("Label")
                 .a({ n: "text", v: "Two field" })
             .tag("Input")
-                .a({ n: "value", v: `{ parts: [ '${this.client._bind({ val:  "amount",
-                                                 path: true })}', '${this.client._bind({
-                                                 val:  "currency",
-                                                 path: true })}'],  type: 'sap.ui.model.type.Currency' , formatOptions: {showMeasure: false}  }` })
+                .a({ n: "value", v: `{ parts: [ '${this.client._bind_path("amount")}', '${this.client._bind_path("currency")}'],  type: 'sap.ui.model.type.Currency' , formatOptions: {showMeasure: false}  }` })
             .tag("Input")
-                .a({ n: "value", v: `{ parts: [ '${this.client._bind({ val:  "amount",
-                                                 path: true })}', '${this.client._bind({
-                                                 val:  "currency",
-                                                 path: true })}'],  type: 'sap.ui.model.type.Currency' , formatOptions: {showNumber: false} }` })
+                .a({ n: "value", v: `{ parts: [ '${this.client._bind_path("amount")}', '${this.client._bind_path("currency")}'],  type: 'sap.ui.model.type.Currency' , formatOptions: {showNumber: false} }` })
             .tag("Label")
                 .a({ n: "text", v: "Default" })
             .tag("Text")
-                .a({ n: "text", v: `{ parts: [ '${this.client._bind({ val:  "amount",
-                                                 path: true })}', '${this.client._bind({
-                                                 val:  "currency",
-                                                 path: true })}'],  type: 'sap.ui.model.type.Currency' }` })
+                .a({ n: "text", v: `{ parts: [ '${this.client._bind_path("amount")}', '${this.client._bind_path("currency")}'],  type: 'sap.ui.model.type.Currency' }` })
             .tag("Label")
                 .a({ n: "text", v: "preserveDecimals:false" })
             .tag("Text")
-                .a({ n: "text", v: `{ parts: [ '${this.client._bind({ val:  "amount",
-                                                      path: true })}', '` + this.client._bind({
-                                                         val:  "currency",
-                                                         path: true }) +
+                .a({ n: "text", v: `{ parts: [ '${this.client._bind_path("amount")}', '` + this.client._bind_path("currency") +
                      `'],  type: 'sap.ui.model.type.Currency' , formatOptions: { preserveDecimals : false } }` })
             .tag("Label")
                 .a({ n: "text", v: "currencyCode:false" })
             .tag("Text")
-                .a({ n: "text", v: `{ parts: [ '${this.client._bind({ val:  "amount",
-                                                      path: true })}', '` + this.client._bind({
-                                                         val:  "currency",
-                                                         path: true }) +
+                .a({ n: "text", v: `{ parts: [ '${this.client._bind_path("amount")}', '` + this.client._bind_path("currency") +
                          `'],  type: 'sap.ui.model.type.Currency' , formatOptions: { currencyCode : false } }` })
             .tag("Label")
                 .a({ n: "text", v: "style:'short'" })
             .tag("Text")
-                .a({ n: "text", v: `{ parts: [ '${this.client._bind({ val:  "amount",
-                                                 path: true })}', '${this.client._bind({
-                                                 val:  "currency",
-                                                 path: true })}'],  type: 'sap.ui.model.type.Currency' , formatOptions: { style : 'short' } }` })
+                .a({ n: "text", v: `{ parts: [ '${this.client._bind_path("amount")}', '${this.client._bind_path("currency")}'],  type: 'sap.ui.model.type.Currency' , formatOptions: { style : 'short' } }` })
             .tag("Label")
                 .a({ n: "text", v: "style:'long'" })
             .tag("Text")
-                .a({ n: "text", v: `{ parts: [ '${this.client._bind({ val:  "amount",
-                                                 path: true })}', '${this.client._bind({
-                                                 val:  "currency",
-                                                 path: true })}'],  type: 'sap.ui.model.type.Currency' , formatOptions: {   style : 'long' } }` })
+                .a({ n: "text", v: `{ parts: [ '${this.client._bind_path("amount")}', '${this.client._bind_path("currency")}'],  type: 'sap.ui.model.type.Currency' , formatOptions: {   style : 'long' } }` })
             .tag("Label")
                 .a({ n: "text", v: "event" })
             .tag("Button")
@@ -144,9 +122,7 @@ defineApp("Z2UI5_CL_SMP_APP_067", class {
             .tag("Label")
                 .a({ n: "text", v: "Without leading Zeros" })
             .tag("Text")
-                .a({ n: "text", v: `{path : '${this.client._bind({
-                            val:  "numeric",
-                            path: true })}', type : 'sap.ui.model.odata.type.String', constraints : {  isDigitSequence : true } }` });
+                .a({ n: "text", v: `{path : '${this.client._bind_path("numeric")}', type : 'sap.ui.model.odata.type.String', constraints : {  isDigitSequence : true } }` });
 
     this.client.view_display(page.stringify());
 

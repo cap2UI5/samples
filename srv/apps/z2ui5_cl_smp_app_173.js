@@ -1,4 +1,4 @@
-// @keywords xml templating xmlpreprocessor template:repeat template:if template:elseif template:with meta model metamodel metadata driven dynamic columns form nested repeat startindex length
+// @keywords xml templating xmlpreprocessor template:repeat template:if template:elseif template:with meta model metamodel metadata driven dynamic columns form nested repeat startindex length _bind_path
 // @summary XML templating driven by a meta model: table columns built with template:repeat, a form generated from a field catalogue with nested template:repeat, template:with and template:if/elseif/else, and a template:if that re-renders on a switch.
 // @docs https://abap2ui5.github.io/docs/cookbook/view/xml_templating
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_173.clas.abap
@@ -56,15 +56,32 @@ defineApp("Z2UI5_CL_SMP_APP_173", class {
   ms_meta   = ty_s_meta;
   ms_detail = ty_s_detail;
 
+  main(client) {
+
+    this.client = client;
+
+    if (client.check_on_init()) {
+      this.model_init();
+      this.view_display();
+    } else if (client.check_on_navigated()) {
+      this.view_display();
+    } else if (client.check_on_event("CHANGE_FLAG")) {
+      // a template:if is evaluated once, while the view is expanded - the
+      // changed flag reaches it only through a rebuild
+      this.view_display();
+    }
+
+  }
+
   view_display() {
 
     // the template model is the view model, so what the repeat, the with and
     // the if read are bound attributes - their paths are composed from the
     // bind call, never written by hand
-    const layout_path = `{template>${this.client._bind({ val: "mt_layout", path: true })}}`;
-    const flag_path   = `{template>${this.client._bind({ val: "mv_flag", path: true })}}`;
-    const meta_path   = `template>${this.client._bind({ val: "ms_meta", path: true })}`;
-    const detail_path = `{${this.client._bind({ val: "ms_detail", path: true })}}`;
+    const layout_path = `{template>${this.client._bind_path("mt_layout")}}`;
+    const flag_path   = `{template>${this.client._bind_path("mv_flag")}}`;
+    const meta_path   = `template>${this.client._bind_path("ms_meta")}`;
+    const detail_path = `{${this.client._bind_path("ms_detail")}}`;
 
     let view = z2ui5_cl_ui5_view_builder.factory()
         .ele({ n: "View", ns: "mvc" })
@@ -236,21 +253,6 @@ defineApp("Z2UI5_CL_SMP_APP_173", class {
                          city:   "Walldorf",
                          age:    26,
                          active: true };
-
-  }
-
-  main(client) {
-
-    this.client = client;
-
-    if (client.check_on_init()) {
-      this.model_init();
-      this.view_display();
-    } else if (client.check_on_navigated()) {
-      this.view_display();
-    } else if (client.check_on_event("CHANGE_FLAG")) {
-      this.view_display();
-    }
 
   }
 });

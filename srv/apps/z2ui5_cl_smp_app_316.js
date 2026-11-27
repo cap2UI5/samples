@@ -2,7 +2,7 @@
 // @summary Opens mailto:, tel: and sms: links through URLHelper, so the device answers with its own mail or phone app instead of the browser.
 // @docs https://abap2ui5.github.io/docs/cookbook/browser_interaction/url_handling
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_316.clas.abap
-import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
+import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_316", class {
 
@@ -21,12 +21,25 @@ defineApp("Z2UI5_CL_SMP_APP_316", class {
     url: "",
   };
 
-  view_display(client) {
+  main(client) {
 
-    this.url   = { url: "http://www.sap.com" };
-    this.email = { email:   "email@email.com",
-                     subject: "subject",
-                     body:    "body" };
+    if (client.check_on_init()) {
+
+      // seeded once - a re-display after a navigation keeps what was typed
+      this.url   = { url: "http://www.sap.com" };
+      this.email = { email:   "email@email.com",
+                       subject: "subject",
+                       body:    "body" };
+
+      this.view_display(client);
+
+    } else if (client.check_on_navigated()) {
+      this.view_display(client);
+    }
+
+  }
+
+  view_display(client) {
 
     const page = z2ui5_cl_ui5_view_builder.factory()
         .ele({ n: "View", ns: "mvc" })
@@ -90,13 +103,14 @@ defineApp("Z2UI5_CL_SMP_APP_316", class {
         .a({ n: "class",       v: "sapUiSmallMarginBottom" });
 
     email_form.tag("Label")
-        .a({ n: "text", v: "Mail Body" })
-        .tag("TextArea")
-            .a({ n: "value",           v: client._bind("email-body") })
-            .a({ n: "width",           v: "100%" })
-            .a({ n: "valueLiveUpdate", b: true })
-            .a({ n: "growing",         b: true })
-            .a({ n: "growingMaxLines", v: "7" });
+        .a({ n: "text", v: "Mail Body" });
+
+    email_form.tag("TextArea")
+        .a({ n: "value",           v: client._bind("email-body") })
+        .a({ n: "width",           v: "100%" })
+        .a({ n: "valueLiveUpdate", b: true })
+        .a({ n: "growing",         b: true })
+        .a({ n: "growingMaxLines", v: "7" });
 
     email_form.tag("Button")
         .a({ n: "press", v: client.follow_up_action({ val:   client.cs_event.urlhelper,
@@ -156,18 +170,6 @@ defineApp("Z2UI5_CL_SMP_APP_316", class {
         .a({ n: "text",  v: "Redirect" });
 
     client.view_display(page.stringify());
-
-    client.follow_up_action({
-        val:   z2ui5_if_client.cs_event.set_title,
-        t_arg: [ "URL Helper Sample" ] });
-
-  }
-
-  main(client) {
-
-    if (client.check_on_navigated()) {
-      this.view_display(client);
-    }
 
   }
 });

@@ -1,4 +1,4 @@
-// @keywords sap.ui.device responsive orientation resize media model
+// @keywords sap.ui.device responsive orientation resize media model popup_close popup_display
 // @summary Reads the sap.ui.Device model - phone, tablet or desktop, orientation and resize - so a view can react to the device it is on.
 // @docs https://abap2ui5.github.io/docs/cookbook/model/device_model https://abap2ui5.github.io/docs/cookbook/device_capabilities/info
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_445.clas.abap
@@ -17,64 +17,6 @@ defineApp("Z2UI5_CL_SMP_APP_445", class {
 
   }
 
-  on_event() {
-
-    if (this.client.check_on_event("OPEN_POPUP")) {
-      this.popup_display();
-    }
-
-  }
-
-  // Build the label/value rows that show the live device state. The
-  // `device>` model is a OneWay JSONModel over sap.ui.Device, so the
-  // bindings below update on their own when the window is resized or the
-  // device is rotated - no backend round-trip is involved.
-  device_form(parent) {
-    let result = null;
-
-    const form = parent.ele({ n: "SimpleForm", ns: "form" })
-        .a({ n: "layout",   v: "ResponsiveGridLayout" })
-        .a({ n: "editable", b: false });
-
-    // a readable label per system type instead of the raw booleans
-    form.tag("Label")
-        .a({ n: "text", v: "System type" })
-        .ele("ObjectStatus")
-            .a({ n: "state", v: "Information" })
-            .a({ n: "text",  v: "{= ${device>/system/phone} ? 'Phone' : (${device>/system/tablet} ? 'Tablet' : (${device>/system/desktop} ? 'Desktop' : 'Other')) }" });
-
-    form.tag("Label")
-        .a({ n: "text", v: "Orientation" })
-        .ele("ObjectStatus")
-            .a({ n: "text", v: "{= ${device>/orientation/landscape} ? 'Landscape' : 'Portrait' }" });
-
-    // resize/width and resize/height are updated live by UI5
-    form.tag("Label")
-        .a({ n: "text", v: "Window size" })
-        .ele("ObjectStatus")
-            .a({ n: "text", v: "{device>/resize/width} x {device>/resize/height} px" });
-
-    form.tag("Label")
-        .a({ n: "text", v: "Touch support" })
-        .ele("ObjectStatus")
-            .a({ n: "state", v: "{= ${device>/support/touch} ? 'Success' : 'None' }" })
-            .a({ n: "text",  v: "{= ${device>/support/touch} ? 'Yes' : 'No' }" });
-
-    form.tag("Label")
-        .a({ n: "text", v: "Browser" })
-        .tag("Text")
-            .a({ n: "text", v: "{device>/browser/name} {device>/browser/version}" });
-
-    form.tag("Label")
-        .a({ n: "text", v: "Operating system" })
-        .tag("Text")
-            .a({ n: "text", v: "{device>/os/name} {device>/os/version}" });
-
-    result = form;
-
-    return result;
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -82,7 +24,8 @@ defineApp("Z2UI5_CL_SMP_APP_445", class {
             .a({ n: "displayBlock", v: "true" })
             .a({ n: "height",       v: "100%" })
             .a({ n: "xmlns",        v: "sap.m" })
-            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" })
+            .a({ n: "xmlns:form",   v: "sap.ui.layout.form" });
 
     const page = view.ele("Shell")
         .ele("Page")
@@ -144,12 +87,77 @@ defineApp("Z2UI5_CL_SMP_APP_445", class {
 
   }
 
+  on_event() {
+
+    if (this.client.check_on_event("OPEN_POPUP")) {
+      this.popup_display();
+    }
+
+  }
+
+  // Build the label/value rows that show the live device state. The
+  // `device>` model is a OneWay JSONModel over sap.ui.Device, so the
+  // bindings below update on their own when the window is resized or the
+  // device is rotated - no backend round-trip is involved.
+  device_form(parent) {
+    let result = null;
+
+    const form = parent.ele({ n: "SimpleForm", ns: "form" })
+        .a({ n: "layout",   v: "ResponsiveGridLayout" })
+        .a({ n: "editable", b: false });
+
+    // a readable label per system type instead of the raw booleans
+    form.tag("Label")
+        .a({ n: "text", v: "System type" });
+
+    form.ele("ObjectStatus")
+        .a({ n: "state", v: "Information" })
+        .a({ n: "text",  v: "{= ${device>/system/phone} ? 'Phone' : (${device>/system/tablet} ? 'Tablet' : (${device>/system/desktop} ? 'Desktop' : 'Other')) }" });
+
+    form.tag("Label")
+        .a({ n: "text", v: "Orientation" });
+
+    form.ele("ObjectStatus")
+        .a({ n: "text", v: "{= ${device>/orientation/landscape} ? 'Landscape' : 'Portrait' }" });
+
+    // resize/width and resize/height are updated live by UI5
+    form.tag("Label")
+        .a({ n: "text", v: "Window size" });
+
+    form.ele("ObjectStatus")
+        .a({ n: "text", v: "{device>/resize/width} x {device>/resize/height} px" });
+
+    form.tag("Label")
+        .a({ n: "text", v: "Touch support" });
+
+    form.ele("ObjectStatus")
+        .a({ n: "state", v: "{= ${device>/support/touch} ? 'Success' : 'None' }" })
+        .a({ n: "text",  v: "{= ${device>/support/touch} ? 'Yes' : 'No' }" });
+
+    form.tag("Label")
+        .a({ n: "text", v: "Browser" });
+
+    form.tag("Text")
+        .a({ n: "text", v: "{device>/browser/name} {device>/browser/version}" });
+
+    form.tag("Label")
+        .a({ n: "text", v: "Operating system" });
+
+    form.tag("Text")
+        .a({ n: "text", v: "{device>/os/name} {device>/os/version}" });
+
+    result = form;
+
+    return result;
+  }
+
   popup_display() {
 
     const popup = z2ui5_cl_ui5_view_builder.factory()
         .ele({ n: "FragmentDefinition", ns: "core" })
             .a({ n: "xmlns",      v: "sap.m" })
-            .a({ n: "xmlns:core", v: "sap.ui.core" });
+            .a({ n: "xmlns:core", v: "sap.ui.core" })
+            .a({ n: "xmlns:form", v: "sap.ui.layout.form" });
 
     // the dialog width itself is driven by the device model
     const dialog = popup.ele("Dialog")

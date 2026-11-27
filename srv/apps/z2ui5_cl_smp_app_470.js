@@ -1,4 +1,4 @@
-// @keywords element binding relative path aggregation dialog row
+// @keywords element binding relative path aggregation dialog row bind_element bindelement popup_close popup_display
 // @summary Element binding on a popup: the dialog binds RELATIVELY to the row that was pressed, so its fields need no path of their own.
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/frontend https://abap2ui5.github.io/docs/cookbook/popup_popover/popup
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_470.clas.abap
@@ -57,14 +57,6 @@ defineApp("Z2UI5_CL_SMP_APP_470", class {
 
   }
 
-  on_event() {
-
-    if (this.client.get_event() === "SHOW") {
-      this.popup_components(this.client.get_event_arg());
-    }
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -119,11 +111,19 @@ defineApp("Z2UI5_CL_SMP_APP_470", class {
                 .tag("Button")
                     .a({ n: "press", v: this.client._event({
                         val: "SHOW",
-                        arg: "$event.oSource.getBindingContext().getPath().split('/').pop()" }) })
+                        arg: "$event.getSource().getBindingContext().getPath().split('/').pop()" }) })
                     .a({ n: "text",  v: "components" })
                     .a({ n: "icon",  v: "sap-icon://product" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    if (this.client.get_event() === "SHOW") {
+      this.popup_components(this.client.get_event_arg());
+    }
 
   }
 

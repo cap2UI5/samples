@@ -15,37 +15,12 @@ defineApp("Z2UI5_CL_SMP_APP_065", class {
 
     this.client = client;
     if (client.check_on_navigated()) {
+
       this.view_display();
+      this.nest_view_display();
+
     } else if (client.check_on_event()) {
       this.on_event();
-    }
-
-  }
-
-  on_event() {
-
-    switch (this.client.get_event()) {
-      case "TEST":
-        this.client.message_box_display(`input ${this.mv_input_nest}`);
-        break;
-      case "ALL":
-        this.view_display();
-        this.nest_view_display();
-        break;
-      case "MAIN":
-        this.view_display();
-        break;
-      case "NEST":
-        this.nest_view_display();
-        break;
-      case "NEST_MODEL":
-        // change only a nest-bound field, without re-rendering the nested XML.
-        // The main and nested views share one model and that model is pushed
-        // with every response, so the nested view picks the change up too.
-        // Press "Rerender only nested view" first so the nested view exists.
-        this.mv_count      = this.mv_count + 1;
-        this.mv_input_nest = `nest model updated #${this.mv_count}`;
-        break;
     }
 
   }
@@ -67,8 +42,9 @@ defineApp("Z2UI5_CL_SMP_APP_065", class {
             .a({ n: "id",             v: "test" });
 
     page.tag("MessageStrip")
-        .a({ n: "text",     v: "A main view with a nested view inside: the buttons re-render everything, only the " +
-                   "main view, only the nested view, or refresh just the nested view's model." })
+        .a({ n: "text",     v: "A main view with a nested view inside, both displayed on start. Type into both " +
+                   "inputs, then press the buttons: re-render everything, only the main view (the nested one is gone " +
+                   "then), only the nested view, or change just the nested view's model with no re-render at all." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });
@@ -90,6 +66,37 @@ defineApp("Z2UI5_CL_SMP_APP_065", class {
             .a({ n: "value", v: this.client._bind("mv_input_main") });
 
     this.client.view_display(lo_view.stringify());
+
+  }
+
+  on_event() {
+
+    switch (this.client.get_event()) {
+      case "TEST":
+        this.client.message_box_display(`input ${this.mv_input_nest}`);
+        break;
+      case "ALL":
+        // the re-render is what this button shows - nothing bound changed
+        this.view_display();
+        this.nest_view_display();
+        break;
+      case "MAIN":
+        // on purpose without nest_view_display( ): the rebuilt main view
+        // comes up without the nested one
+        this.view_display();
+        break;
+      case "NEST":
+        this.nest_view_display();
+        break;
+      case "NEST_MODEL":
+        // change only a nest-bound field, without re-rendering the nested XML.
+        // The main and nested views share one model and that model is pushed
+        // with every response, so the nested view picks the change up too.
+        // After "Rerender Main without nest" there is no nested view to reach.
+        this.mv_count      = this.mv_count + 1;
+        this.mv_input_nest = `nest model updated #${this.mv_count}`;
+        break;
+    }
 
   }
 

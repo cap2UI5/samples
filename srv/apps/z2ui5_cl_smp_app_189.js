@@ -10,19 +10,20 @@ defineApp("Z2UI5_CL_SMP_APP_189", class {
   two   = "";
   three = "";
 
-  on_event() {
+  main(client) {
 
-    switch (this.client.get_event()) {
-      case "one_enter":
-        this.client.follow_up_action({
-            val:   z2ui5_if_client.cs_event.set_focus,
-            t_arg: [ "IdTwo" ] });
-        break;
-      case "two_enter":
-        this.client.follow_up_action({
-            val:   z2ui5_if_client.cs_event.set_focus,
-            t_arg: [ "IdThree" ] });
-        break;
+    this.client = client;
+    if (client.check_on_init()) {
+
+      this.view_display();
+      client.follow_up_action({
+          val:   z2ui5_if_client.cs_event.set_focus,
+          t_arg: [ "IdOne" ] });
+
+    } else if (client.check_on_navigated()) {
+      this.view_display();
+    } else if (client.check_on_event()) {
+      this.on_event();
     }
 
   }
@@ -73,20 +74,19 @@ defineApp("Z2UI5_CL_SMP_APP_189", class {
 
   }
 
-  main(client) {
+  on_event() {
 
-    this.client = client;
-    if (client.check_on_init()) {
-
-      this.view_display();
-      client.follow_up_action({
-          val:   z2ui5_if_client.cs_event.set_focus,
-          t_arg: [ "IdOne" ] });
-
-    } else if (client.check_on_navigated()) {
-      this.view_display();
-    } else if (client.check_on_event()) {
-      this.on_event();
+    switch (this.client.get_event()) {
+      case "one_enter":
+        this.client.follow_up_action({
+            val:   z2ui5_if_client.cs_event.set_focus,
+            t_arg: [ "IdTwo" ] });
+        break;
+      case "two_enter":
+        this.client.follow_up_action({
+            val:   z2ui5_if_client.cs_event.set_focus,
+            t_arg: [ "IdThree" ] });
+        break;
     }
 
   }

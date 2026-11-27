@@ -39,18 +39,21 @@ export async function post(url, { app, id = "", event = "", args = [], model = {
   return { status: r.status, text, json, id: json?.S_FRONT?.ID, app: json?.S_FRONT?.APP };
 }
 
-/** Every action of a response, system and custom. */
-export const actions = (r) => [
-  ...(r.json?.S_FRONT?.S_ACTION?.T_SYSTEM ?? []),
-  ...(r.json?.S_FRONT?.S_ACTION?.T_CUSTOM ?? []),
-];
+// What a response says, as protocol 3 carries it (abap2UI5/protocol): the
+// screen in S_FRONT.VIEWS - one entry per slot the roundtrip changes,
+// { XML, OPT } to display it or { DESTROY: true } to take it down - the URL
+// intent in S_FRONT.NAV and what to do on the screen in S_FRONT.ACTIONS.
+
+/** The slots a response changes: { MAIN: { XML, OPT }, POPUP: { DESTROY: true }, … }. */
+export const views = (r) => r.json?.S_FRONT?.VIEWS ?? {};
+
+/** The front-end actions of a response, in order. */
+export const actions = (r) => r.json?.S_FRONT?.ACTIONS ?? [];
 
 /** The XML a response displays into a view slot (MAIN, POPUP, NEST, …), or undefined. */
-export const slot = (r, name) => actions(r)
-  .find((a) => a[0] === "VIEW_SLOTS" && a[1] === "display" && a[2] === name)?.[3];
+export const slot = (r, name) => views(r)[name]?.XML;
 
-export const destroys = (r, name) => actions(r)
-  .some((a) => a[0] === "VIEW_SLOTS" && a[1] === "destroy" && a[2] === name);
+export const destroys = (r, name) => views(r)[name]?.DESTROY === true;
 
 /** true, or the parser's complaint - a template literal typo shows up here, not only in the browser */
 export const wellFormed = (xml) => {

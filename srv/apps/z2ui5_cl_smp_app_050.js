@@ -78,26 +78,27 @@ defineApp("Z2UI5_CL_SMP_APP_050", class {
                          ".mySuperRedButton .sapMBtnContent \\{" + `\n` +
                          "    color: #fff !important;" + `\n` +
                          "\\}" + `\n` +
-                         "</style>" })
-        .ele({ n: "SimpleForm", ns: "form" })
-            .a({ n: "title",    v: "Form Title" })
-            .a({ n: "editable", b: true })
-            .ele({ n: "content", ns: "form" })
-                .tag("Title")
-                    .a({ n: "text", v: "Input" })
-                .tag("Label")
-                    .a({ n: "text", v: "quantity" })
-                .tag("Input")
-                    .a({ n: "value", v: this.client._bind("quantity") })
-                .tag("Label")
-                    .a({ n: "text", v: "product" })
-                .tag("Input")
-                    .a({ n: "enabled", b: false })
-                    .a({ n: "value",   t: this.product })
-                .tag("Button")
-                    .a({ n: "press", v: this.client._event("BUTTON_POST") })
-                    .a({ n: "text",  v: "post" })
-                    .a({ n: "class", v: "mySuperRedButton" });
+                         "</style>" });
+
+    page.ele({ n: "SimpleForm", ns: "form" })
+        .a({ n: "title",    v: "Post a Quantity" })
+        .a({ n: "editable", b: true })
+        .ele({ n: "content", ns: "form" })
+            .tag("Title")
+                .a({ n: "text", v: "Input" })
+            .tag("Label")
+                .a({ n: "text", v: "quantity" })
+            .tag("Input")
+                .a({ n: "value", v: this.client._bind("quantity") })
+            .tag("Label")
+                .a({ n: "text", v: "product" })
+            .tag("Input")
+                .a({ n: "enabled", b: false })
+                .a({ n: "value",   t: this.product })
+            .tag("Button")
+                .a({ n: "press", v: this.client._event("BUTTON_POST") })
+                .a({ n: "text",  v: "post" })
+                .a({ n: "class", v: "mySuperRedButton" });
 
     this.client.view_display(view.stringify());
 

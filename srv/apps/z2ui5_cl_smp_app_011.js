@@ -1,6 +1,6 @@
-// @keywords edit input add row delete multiselect toolbar
+// @keywords edit input add row delete multiselect toolbar _bind_path
 // @summary An editable table: input cells, adding and deleting rows, multi-select and a toolbar over them.
-// @docs https://abap2ui5.github.io/docs/cookbook/model/tables https://abap2ui5.github.io/docs/tutorials/walkthrough/step-8 https://abap2ui5.github.io/docs/tutorials/walkthrough/step-10
+// @docs https://abap2ui5.github.io/docs/cookbook/model/tables https://abap2ui5.github.io/docs/tutorials/step-8 https://abap2ui5.github.io/docs/tutorials/step-10
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_011.clas.abap
 import { defineApp, t, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
@@ -18,6 +18,7 @@ defineApp("Z2UI5_CL_SMP_APP_011", class {
   });
 
   check_editable_active = false;
+  edit_button_text = "edit";
 
   view_display() {
 
@@ -42,7 +43,7 @@ defineApp("Z2UI5_CL_SMP_APP_011", class {
         .a({ n: "class",    v: "sapUiSmallMargin" });
 
     const tab = page.ele("Table")
-        .a({ n: "items", v: `{path: '${this.client._bind({ val: "t_tab", path: true })}', templateShareable: false}` })
+        .a({ n: "items", v: `{path: '${this.client._bind_path("t_tab")}', templateShareable: false}` })
         .a({ n: "mode",  v: "MultiSelect" })
         .ele("headerToolbar")
             .ele("OverflowToolbar")
@@ -63,7 +64,7 @@ defineApp("Z2UI5_CL_SMP_APP_011", class {
                     .a({ n: "icon",  v: "sap-icon://add" })
                 .tag("Button")
                     .a({ n: "press", v: this.client._event("BUTTON_EDIT") })
-                    .a({ n: "text",  t: this.check_editable_active ? "display" : "edit" })
+                    .a({ n: "text",  v: this.client._bind("edit_button_text") })
                     .a({ n: "tooltip", v: "Switch the cells between display and edit mode" })
                     .a({ n: "icon",  v: "sap-icon://edit" })
             .end()
@@ -136,8 +137,8 @@ defineApp("Z2UI5_CL_SMP_APP_011", class {
 
     } else if (client.check_on_event("BUTTON_EDIT")) {
       this.check_editable_active = !this.check_editable_active;
-      // a read of t_tab is a copy: the changed rows are written back whole
-      this.t_tab = this.t_tab.map((row) => ({ ...row, editable: this.check_editable_active }));
+      for (const row of this.t_tab) row.editable = this.check_editable_active;
+      this.edit_button_text = this.check_editable_active ? "display" : "edit";
 
     } else if (client.check_on_event("BUTTON_DELETE")) {
       this.t_tab = this.t_tab.filter((row) => !row.selkz);

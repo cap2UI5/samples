@@ -132,8 +132,7 @@ defineApp("ZCL_PROBE", class {
     try { json = JSON.parse(text); } catch { /* an error page */ }
     return { status: r.status, text, json };
   };
-  const view = (r) => (r.json?.S_FRONT?.S_ACTION?.T_SYSTEM ?? [])
-    .find((a) => a[0] === "VIEW_SLOTS" && a[1] === "display" && a[2] === "MAIN")?.[3] ?? "";
+  const view = (r) => r.json?.S_FRONT?.VIEWS?.MAIN?.XML ?? "";
 
   const hello = await post("Z2UI5_CL_SMP_APP_493");
   check("a sample starts and shows its view", hello.status === 200 && /title="abap2UI5 - /.test(view(hello)),

@@ -1,4 +1,4 @@
-// @keywords dirty unsaved changes leave confirmation warning
+// @keywords dirty unsaved changes leave confirmation warning set_focus popup_display popup_close
 // @summary Refuses to leave an app with unsaved changes: the confirmation popup in front of nav_app_leave, and how the dirty flag gets there.
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/navigation/inner_app
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_279.clas.abap
@@ -67,7 +67,10 @@ defineApp("Z2UI5_CL_SMP_APP_279", class {
         .a({ n: "visible", v: this.client._bind("dirty") })
         .a({ n: "class",   v: "sapUiSmallMarginBegin" });
 
-    page.tag({ n: "Dirty", ns: "z2ui5" });
+    // isDirty is what arms the control - unbound it stays false, and the
+    // browser never asks before the page is closed or reloaded
+    page.tag({ n: "Dirty", ns: "z2ui5" })
+        .a({ n: "isDirty", v: this.client._bind("dirty") });
 
     this.client.view_display(page.stringify());
 
@@ -96,9 +99,6 @@ defineApp("Z2UI5_CL_SMP_APP_279", class {
         this.client.nav_app_leave();
         break;
 
-      case "POPUP_CANCEL":
-        this.client.popup_destroy();
-        break;
       case "SUBMIT":
         this.dirty = (this.text_input !== "");
         break;
@@ -128,7 +128,7 @@ defineApp("Z2UI5_CL_SMP_APP_279", class {
         .end()
         .ele("buttons")
             .tag("Button")
-                .a({ n: "press", v: this.client._event("POPUP_CANCEL") })
+                .a({ n: "press", v: this.client.follow_up_action(this.client.cs_event.popup_close) })
                 .a({ n: "text",  v: "Cancel" })
             .tag("Button")
                 .a({ n: "press", v: this.client._event("POPUP_LEAVE") })

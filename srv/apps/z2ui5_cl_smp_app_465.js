@@ -17,22 +17,6 @@ defineApp("Z2UI5_CL_SMP_APP_465", class {
 
   }
 
-  on_event() {
-
-    if (this.client.get_event() === "TOGGLE") {
-      // toggle the popover open/closed, anchored to the pressed button's DOM
-      // ref - the whitelisted toggleBy opens it if closed, closes it if open
-      // (the controller pattern oPopover.openBy(oButton) / oPopover.close()).
-      // t_arg is positional: id, method, anchor id (the view defaults to
-      // cs_view-main and can be omitted for a main-view control)
-      this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
-                                t_arg: [ "demoPopover",
-                                                 "toggleBy",
-                                                 this.client.get_event_arg() ] });
-    }
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -64,7 +48,7 @@ defineApp("Z2UI5_CL_SMP_APP_465", class {
     page.tag("MessageStrip")
         .a({ n: "text",     v: "The button toggles the popover via the whitelisted toggleBy method " +
                    "(follow_up_action with cs_event-control_by_id), anchored to the button's DOM ref " +
-                   "passed as $event.oSource.sId - open-if-closed, close-if-open, client-side after render." })
+                   "passed as $event.getSource().getId() - open-if-closed, close-if-open, client-side after render." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });
@@ -73,11 +57,27 @@ defineApp("Z2UI5_CL_SMP_APP_465", class {
         .a({ n: "class", v: "sapUiSmallMargin" })
         .tag("Button")
             .a({ n: "press", v: this.client._event({ val: "TOGGLE",
-                                           arg: "$event.oSource.sId" }) })
+                                           arg: "$event.getSource().getId()" }) })
             .a({ n: "text",  v: "Toggle popover" })
             .a({ n: "icon",  v: "sap-icon://email" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    if (this.client.get_event() === "TOGGLE") {
+      // toggle the popover open/closed, anchored to the pressed button's DOM
+      // ref - the whitelisted toggleBy opens it if closed, closes it if open
+      // (the controller pattern oPopover.openBy(oButton) / oPopover.close()).
+      // t_arg is positional: id, method, anchor id (the view defaults to
+      // cs_view-main and can be omitted for a main-view control)
+      this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
+                                t_arg: [ "demoPopover",
+                                                 "toggleBy",
+                                                 this.client.get_event_arg() ] });
+    }
 
   }
 });

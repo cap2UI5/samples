@@ -1,10 +1,12 @@
-// @keywords icon font registerfont iconpool tnt collection glyph missing control_global
-// @summary Registers the sap.tnt icon collection with IconPool so a sap-icon://SAP-icons-TNT/... URI resolves - without it the icon renders no glyph and logs nothing.
+// @keywords icon font registerfont iconpool tnt collection glyph missing control_global start_timer
+// @summary Registers the sap.tnt icon collection with IconPool so a sap-icon://SAP-icons-TNT/... URI resolves - without it the icon renders no glyph, and only the console says why.
 // @docs https://abap2ui5.github.io/docs/cookbook/event_navigation/frontend
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_518.clas.abap
 import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_518", class {
+
+  font_registered = false;
 
   main(client) {
 
@@ -14,26 +16,14 @@ defineApp("Z2UI5_CL_SMP_APP_518", class {
       this.view_display();
     } else if (client.check_on_navigated()) {
       this.view_display();
+    } else if (client.check_on_event("FONT_REGISTERED")) {
+
+      this.font_registered = true;
+      // the TNT icon is a control the first view deliberately left out
+      // (see font_register) - adding it takes a new view, not a model push
+      this.view_display();
+
     }
-
-  }
-
-  font_register() {
-
-    // A normal UI5 app does this in its Component's init. An abap2UI5 app has
-    // no Component of its own, and IconPool is a module SINGLETON rather than
-    // a control, so no other wire reaches it. t_arg is positional: the font
-    // family and the font URI - a module path in every real use, resolved
-    // through sap.ui.require.toUrl, so the registration survives a different
-    // mount point.
-    //
-    // Issue it from the init branch: the collection is registered once per
-    // session, so a repeat call costs nothing but says the wrong thing.
-    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_global,
-                              t_arg: [ "ICON_POOL",
-                                               "registerFont",
-                                               "SAP-icons-TNT",
-                                               "sap/tnt/themes/base/fonts/" ] });
 
   }
 
@@ -55,29 +45,62 @@ defineApp("Z2UI5_CL_SMP_APP_518", class {
 
     page.tag("MessageStrip")
         .a({ n: "text",     v: "Only the default SAP-icons font is registered out of the box. A URI naming another " +
-                   "collection renders NO GLYPH and logs nothing at all - an empty space where an icon should be is the " +
-                   "whole symptom, which is what makes this one worth knowing." })
+                   "collection renders NO GLYPH - an empty space where an icon should be, and one console line (\"The " +
+                   "font configuration for collection ... is not registered\") is the whole symptom." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });
 
-    page.ele("VBox")
-        .a({ n: "class", v: "sapUiSmallMargin" })
-        .tag("Title")
-            .a({ n: "text",  v: "From the default collection" })
-            .a({ n: "level", v: "H3" })
-        .tag({ n: "Icon", ns: "core" })
-            .a({ n: "src",   v: "sap-icon://sap-ui5" })
-            .a({ n: "size",  v: "2.5rem" })
-            .a({ n: "class", v: "sapUiSmallMarginBottom" })
-        .tag("Title")
-            .a({ n: "text",  v: "From SAP-icons-TNT, registered above" })
-            .a({ n: "level", v: "H3" })
-        .tag({ n: "Icon", ns: "core" })
-            .a({ n: "src",  v: "sap-icon://SAP-icons-TNT/application-service" })
-            .a({ n: "size", v: "2.5rem" });
+    const box = page.ele("VBox")
+        .a({ n: "class", v: "sapUiSmallMargin" });
+
+    box.tag("Title")
+        .a({ n: "text",  v: "From the default collection" })
+        .a({ n: "level", v: "H3" });
+
+    box.tag({ n: "Icon", ns: "core" })
+        .a({ n: "src",   v: "sap-icon://sap-ui5" })
+        .a({ n: "size",  v: "2.5rem" })
+        .a({ n: "class", v: "sapUiSmallMarginBottom" });
+
+    box.tag("Title")
+        .a({ n: "text",  v: "From SAP-icons-TNT, registered above" })
+        .a({ n: "level", v: "H3" });
+
+    if (this.font_registered === true) {
+      box.tag({ n: "Icon", ns: "core" })
+          .a({ n: "src",  v: "sap-icon://SAP-icons-TNT/application-service" })
+          .a({ n: "size", v: "2.5rem" });
+    }
 
     this.client.view_display(view.stringify());
+
+  }
+
+  font_register() {
+
+    // A normal UI5 app does this in its Component's init. An abap2UI5 app has
+    // no Component of its own, and IconPool is a module SINGLETON rather than
+    // a control, so no other wire reaches it. t_arg is positional: the font
+    // family and the font URI - a module path in every real use, resolved
+    // through sap.ui.require.toUrl, so the registration survives a different
+    // mount point.
+    //
+    // Issue it from the init branch: the collection is registered once per
+    // session, so a repeat call costs nothing but says the wrong thing.
+    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_global,
+                              t_arg: [ "ICON_POOL",
+                                               "registerFont",
+                                               "SAP-icons-TNT",
+                                               "sap/tnt/themes/base/fonts/" ] });
+
+    // A follow-up action runs AFTER the view of the same roundtrip has
+    // rendered, so a TNT icon in that view would be drawn while the
+    // collection is still unknown - empty, and UI5 logs an error for it. The
+    // timer queues one roundtrip behind the registration, and only the view
+    // that roundtrip displays carries the icon.
+    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.start_timer,
+                              t_arg: [ "FONT_REGISTERED", "0" ] });
 
   }
 });

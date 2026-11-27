@@ -36,20 +36,6 @@ defineApp("Z2UI5_CL_SMP_APP_537", class {
 
   }
 
-  on_event_row() {
-
-    // every argument arrives as a string: the number the expression computed
-    // as its digits, the result of the comparison as abap_true or empty -
-    // so it is compared like an abap_bool, never asked IS INITIAL
-    const is_laptop = (this.client.get_event_arg(3) === (true ? "X" : "") ? "yes" : "no");
-
-    this.client.message_box_display(`Product: ${this.client.get_event_arg(1)}\n` +
-                                 `Quantity * 10: ${this.client.get_event_arg(2)}\n` +
-                                 `Is a laptop: ${is_laptop}\n` +
-                                 `Delivery (formatted in the browser): ${this.client.get_event_arg(4)}`);
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -136,6 +122,20 @@ defineApp("Z2UI5_CL_SMP_APP_537", class {
                                               arg: "{ product: 'Notebook', quantity: 3, express: true, tags: ['new', 'sale'] }" }) });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event_row() {
+
+    // every argument arrives as a string: the number the expression computed
+    // as its digits, the result of the comparison as abap_true or empty -
+    // so it is compared like an abap_bool, never asked IS INITIAL
+    const is_laptop = (this.client.get_event_arg(3) === (true ? "X" : "") ? "yes" : "no");
+
+    this.client.message_box_display(`Product: ${this.client.get_event_arg(1)}\n` +
+                                 `Quantity * 10: ${this.client.get_event_arg(2)}\n` +
+                                 `Is a laptop: ${is_laptop}\n` +
+                                 `Delivery (formatted in the browser): ${this.client.get_event_arg(4)}`);
 
   }
 });

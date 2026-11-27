@@ -12,6 +12,26 @@ defineApp("Z2UI5_CL_SMP_APP_305", class {
 
   t_tab = t.table(ty_s_row);
 
+  main(client) {
+
+    this.client = client;
+
+    if (client.check_on_init()) {
+      this.t_tab = [
+          { title: "entry 01",  value: "red" },
+          { title: "entry 02",  value: "blue" },
+          { title: "entry 03",  value: "green" },
+          { title: "entry 04",  value: "yellow" },
+          { title: "entry 05",  value: "orange" },
+          { title: "entry 06",  value: "grey" } ];
+
+      this.set_view();
+    } else if (client.check_on_navigated()) {
+      this.set_view();
+    }
+
+  }
+
   set_view() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -65,7 +85,6 @@ defineApp("Z2UI5_CL_SMP_APP_305", class {
 
     const tab = page.ele("Table")
         .a({ n: "items", v: this.client._bind("t_tab") })
-        .a({ n: "mode",  v: "MultiSelect" })
         .ele("headerToolbar")
             .ele("OverflowToolbar")
                 .tag("Title")
@@ -100,26 +119,6 @@ defineApp("Z2UI5_CL_SMP_APP_305", class {
                     .a({ n: "value",   v: "{VALUE}" });
 
     this.client.view_display(view.stringify());
-
-  }
-
-  main(client) {
-
-    this.client = client;
-
-    if (client.check_on_init()) {
-      this.t_tab = [
-          { title: "entry 01",  value: "red" },
-          { title: "entry 02",  value: "blue" },
-          { title: "entry 03",  value: "green" },
-          { title: "entry 04",  value: "yellow" },
-          { title: "entry 05",  value: "orange" },
-          { title: "entry 06",  value: "grey" } ];
-
-      this.set_view();
-    } else if (client.check_on_navigated()) {
-      this.set_view();
-    }
 
   }
 });
