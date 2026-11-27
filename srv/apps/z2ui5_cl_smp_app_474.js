@@ -1,4 +1,4 @@
-// @keywords url policy link security validator relative allow deny
+// @keywords url policy link security validator relative allow deny control_by_id
 // @summary The URL policy of a MessagePopover: which links it will follow and which it refuses, and why the default is the strict one.
 // @docs https://abap2ui5.github.io/docs/cookbook/translation_messages/message
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_474.clas.abap
@@ -14,53 +14,6 @@ defineApp("Z2UI5_CL_SMP_APP_474", class {
     } else if (client.check_on_event()) {
       this.on_event();
     }
-
-  }
-
-  on_event() {
-
-    switch (this.client.get_event()) {
-
-      case "OPEN_RELATIVE_ONLY":
-        this.popover_open("RELATIVE_ONLY");
-        break;
-
-      case "OPEN_ALLOW_ALL":
-        this.popover_open("ALLOW_ALL");
-        break;
-
-      case "OPEN_DENY_ALL":
-        this.popover_open("DENY_ALL");
-        break;
-
-    }
-
-  }
-
-  popover_open(policy) {
-
-    // setAsyncURLHandler takes a JS callback in a UI5 controller, which no
-    // backend payload can carry - the frontend therefore takes the NAME of a
-    // built-in policy and installs the matching validator itself:
-    // RELATIVE_ONLY (only in-app links stay clickable), ALLOW_ALL, DENY_ALL
-    //
-    // The handler is live control state a rebuild destroys, and this method is
-    // not on the display path - control-state-lost-on-rebuild is right about
-    // both. It is still not a defect HERE: every open goes through this method,
-    // so the validator is re-installed immediately before each openBy( ) below,
-    // and there is no window in which the popover is visible without it. That
-    // is the one thing the rule cannot see, so it is said here instead.
-    // re-issued before every openBy
-    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
-                              t_arg: [ "msgPopover",
-                                               "setAsyncURLHandler",
-                                               policy ] });
-
-    // ... and only then open it, anchored to the button that fired the event
-    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
-                              t_arg: [ "msgPopover",
-                                               "openBy",
-                                               this.client.get_event_arg() ] });
 
   }
 
@@ -112,21 +65,68 @@ defineApp("Z2UI5_CL_SMP_APP_474", class {
         .a({ n: "class", v: "sapUiSmallMargin" })
         .tag("Button")
             .a({ n: "press", v: this.client._event({ val: "OPEN_RELATIVE_ONLY",
-                                    arg: "$event.oSource.sId" }) })
+                                    arg: "$event.getSource().getId()" }) })
             .a({ n: "text",  v: "Open with RELATIVE_ONLY" })
             .a({ n: "type",  v: "Emphasized" })
         .tag("Button")
             .a({ n: "press", v: this.client._event({ val: "OPEN_ALLOW_ALL",
-                                    arg: "$event.oSource.sId" }) })
+                                    arg: "$event.getSource().getId()" }) })
             .a({ n: "text",  v: "Open with ALLOW_ALL" })
             .a({ n: "class", v: "sapUiTinyMarginBegin" })
         .tag("Button")
             .a({ n: "press", v: this.client._event({ val: "OPEN_DENY_ALL",
-                                    arg: "$event.oSource.sId" }) })
+                                    arg: "$event.getSource().getId()" }) })
             .a({ n: "text",  v: "Open with DENY_ALL" })
             .a({ n: "class", v: "sapUiTinyMarginBegin" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    switch (this.client.get_event()) {
+
+      case "OPEN_RELATIVE_ONLY":
+        this.popover_open("RELATIVE_ONLY");
+        break;
+
+      case "OPEN_ALLOW_ALL":
+        this.popover_open("ALLOW_ALL");
+        break;
+
+      case "OPEN_DENY_ALL":
+        this.popover_open("DENY_ALL");
+        break;
+
+    }
+
+  }
+
+  popover_open(policy) {
+
+    // setAsyncURLHandler takes a JS callback in a UI5 controller, which no
+    // backend payload can carry - the frontend therefore takes the NAME of a
+    // built-in policy and installs the matching validator itself:
+    // RELATIVE_ONLY (only in-app links stay clickable), ALLOW_ALL, DENY_ALL
+    //
+    // The handler is live control state a rebuild destroys, and this method is
+    // not on the display path - control-state-lost-on-rebuild is right about
+    // both. It is still not a defect HERE: every open goes through this method,
+    // so the validator is re-installed immediately before each openBy( ) below,
+    // and there is no window in which the popover is visible without it. That
+    // is the one thing the rule cannot see, so it is said here instead.
+    // re-issued before every openBy
+    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
+                              t_arg: [ "msgPopover",
+                                               "setAsyncURLHandler",
+                                               policy ] });
+
+    // ... and only then open it, anchored to the button that fired the event
+    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
+                              t_arg: [ "msgPopover",
+                                               "openBy",
+                                               this.client.get_event_arg() ] });
 
   }
 });

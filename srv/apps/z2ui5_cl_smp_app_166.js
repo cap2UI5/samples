@@ -25,6 +25,30 @@ defineApp("Z2UI5_CL_SMP_APP_166", class {
     ...ty_s_struc_incl,
   };
 
+  main(client) {
+
+    this.client = client;
+
+    if (client.check_on_init()) {
+
+      this.ms_struc  = { ...this.ms_struc, title: "title" };
+      this.ms_struc  = { ...this.ms_struc, value: "val01" };
+      this.ms_struc = { ...this.ms_struc, value2: "val02" };
+
+      this.ms_struc2  = { ...this.ms_struc2, title: "title" };
+      this.ms_struc2  = { ...this.ms_struc2, value: "val01" };
+      this.ms_struc2 = { ...this.ms_struc2, value2: "val02" };
+      this.ms_struc2 = { ...this.ms_struc2, incl_title: "title_incl" };
+      this.ms_struc2 = { ...this.ms_struc2, incl_value: "val01_incl" };
+      this.ms_struc2 = { ...this.ms_struc2, incl_value2: "val02_incl" };
+
+      this.view_display();
+    } else if (client.check_on_navigated()) {
+      this.view_display();
+    }
+
+  }
+
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -68,30 +92,6 @@ defineApp("Z2UI5_CL_SMP_APP_166", class {
         .a({ n: "value", v: this.client._bind({ val: "ms_struc2-incl_value2" }) });
 
     this.client.view_display(view.stringify());
-
-  }
-
-  main(client) {
-
-    this.client = client;
-
-    if (client.check_on_init()) {
-
-      this.ms_struc  = { ...this.ms_struc, title: "title" };
-      this.ms_struc  = { ...this.ms_struc, value: "val01" };
-      this.ms_struc = { ...this.ms_struc, value2: "val02" };
-
-      this.ms_struc2  = { ...this.ms_struc2, title: "title" };
-      this.ms_struc2  = { ...this.ms_struc2, value: "val01" };
-      this.ms_struc2 = { ...this.ms_struc2, value2: "val02" };
-      this.ms_struc2 = { ...this.ms_struc2, incl_title: "title_incl" };
-      this.ms_struc2 = { ...this.ms_struc2, incl_value: "val01_incl" };
-      this.ms_struc2 = { ...this.ms_struc2, incl_value2: "val02_incl" };
-
-      this.view_display();
-    } else if (client.check_on_navigated()) {
-      this.view_display();
-    }
 
   }
 });

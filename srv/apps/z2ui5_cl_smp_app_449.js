@@ -17,20 +17,6 @@ defineApp("Z2UI5_CL_SMP_APP_449", class {
 
   }
 
-  on_event() {
-
-    if (this.client.get_event() === "OPEN") {
-      // open the popup-mode PDFViewer via the whitelisted open method -
-      // the viewer brings its own dialog and close button.
-      // t_arg is positional: id, method (the view defaults to cs_view-main
-      // and can be omitted for a main-view control)
-      this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
-                                t_arg: [ "demoPdf",
-                                                 "open" ] });
-    }
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -70,6 +56,20 @@ defineApp("Z2UI5_CL_SMP_APP_449", class {
             .a({ n: "icon",  v: "sap-icon://pdf-attachment" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    if (this.client.get_event() === "OPEN") {
+      // open the popup-mode PDFViewer via the whitelisted open method -
+      // the viewer brings its own dialog and close button.
+      // t_arg is positional: id, method (the view defaults to cs_view-main
+      // and can be omitted for a main-view control)
+      this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
+                                t_arg: [ "demoPdf",
+                                                 "open" ] });
+    }
 
   }
 });

@@ -21,6 +21,11 @@ defineApp("Z2UI5_CL_SMP_APP_088", class {
 
   view_display() {
 
+    // the NavContainer opens on the page of the selected tab: after a
+    // re-display (Back, a restored state) the tab and the page stay in step
+    const initial_page = (this.mv_selected_key === "page2" || this.mv_selected_key === "page3" ? this.mv_selected_key
+                                      : "page1");
+
     const page = z2ui5_cl_ui5_view_builder.factory()
         .ele({ n: "View", ns: "mvc" })
             .a({ n: "displayBlock", v: "true" })
@@ -60,7 +65,7 @@ defineApp("Z2UI5_CL_SMP_APP_088", class {
                 .a({ n: "key",  v: "page3" });
 
     page.ele("NavContainer")
-        .a({ n: "initialPage",           v: "page1" })
+        .a({ n: "initialPage",           t: initial_page })
         .a({ n: "id",                    v: "NavCon" })
         .a({ n: "defaultTransitionName", v: "flip" })
         .ele("pages")

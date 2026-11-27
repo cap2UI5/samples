@@ -1,4 +1,4 @@
-// @keywords confirm warning error success information dialog action
+// @keywords confirm warning error success information dialog action onclose message_box_display
 // @summary Every MessageBox type - confirm, warning, error, success, information - and what a custom action button changes about the answer.
 // @docs https://abap2ui5.github.io/docs/cookbook/translation_messages/message
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_382.clas.abap
@@ -24,37 +24,6 @@ defineApp("Z2UI5_CL_SMP_APP_382", class {
 
   }
 
-  on_init() {
-
-    this.title   = "abap2UI5";
-    this.message = "This is a message box.";
-    this.details = "These are additional details about the message.";
-
-  }
-
-  on_event() {
-
-    switch (this.client.get_event()) {
-      case "CUSTOM":
-        this.client.message_box_display({
-            text:             this.message,
-            title:            this.title,
-            type:             "information",
-            details:          this.details,
-            actions:          [ "Approve", "Reject" ],
-            emphasizedaction: "Approve" });
-        break;
-      default:
-        this.client.message_box_display({
-            text:    this.message,
-            title:   this.title,
-            type:    this.client.get_event(),
-            details: this.details });
-        break;
-    }
-
-  }
-
   view_display() {
 
     const page = z2ui5_cl_ui5_view_builder.factory()
@@ -71,8 +40,9 @@ defineApp("Z2UI5_CL_SMP_APP_382", class {
                     .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
 
     page.tag("MessageStrip")
-        .a({ n: "text",     v: "This sample demonstrates MessageBox: open confirm, information, success, " +
-                   "warning, error, or a custom dialog with your own actions." })
+        .a({ n: "text",     v: "Open a MessageBox of each type, or a custom one with your own actions, and close it: " +
+                   "onclose raises a backend event that carries the pressed button, and the toast shows it - " +
+                   "OK or CANCEL for confirm, CLOSE for error, Approve or Reject for the custom box." })
         .a({ n: "type",     v: "Information" })
         .a({ n: "showIcon", b: true })
         .a({ n: "class",    v: "sapUiSmallMargin" });
@@ -131,6 +101,45 @@ defineApp("Z2UI5_CL_SMP_APP_382", class {
                 .a({ n: "type",  v: "Emphasized" });
 
     this.client.view_display(page.stringify());
+
+  }
+
+  on_event() {
+
+    // every box names BOX_CLOSED as its onclose event: the button the user
+    // pressed comes back as the first event argument - the type's default
+    // (OK, CANCEL, CLOSE) or one of the custom actions
+    switch (this.client.get_event()) {
+      case "BOX_CLOSED":
+        this.client.message_toast_display(`Answer: ${this.client.get_event_arg()}`);
+        break;
+      case "CUSTOM":
+        this.client.message_box_display({
+            text:             this.message,
+            title:            this.title,
+            type:             "information",
+            details:          this.details,
+            actions:          [ "Approve", "Reject" ],
+            emphasizedaction: "Approve",
+            onclose:          "BOX_CLOSED" });
+        break;
+      default:
+        this.client.message_box_display({
+            text:    this.message,
+            title:   this.title,
+            type:    this.client.get_event(),
+            details: this.details,
+            onclose: "BOX_CLOSED" });
+        break;
+    }
+
+  }
+
+  on_init() {
+
+    this.title   = "abap2UI5";
+    this.message = "This is a message box.";
+    this.details = "These are additional details about the message.";
 
   }
 });

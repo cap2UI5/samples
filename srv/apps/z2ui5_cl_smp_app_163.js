@@ -1,9 +1,55 @@
-// @keywords menu menuitem popover button messagetoast require module
+// @keywords menu menuitem popover button messagetoast require module popover_display
 // @summary A Menu opened as a popover from a Button, whose items call a UI5 module loaded with core:require, so the click is answered in the frontend.
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_163.clas.abap
 import { defineApp, z2ui5_cl_ui5_view_builder } from "@cap2ui5/cds-plugin";
 
 defineApp("Z2UI5_CL_SMP_APP_163", class {
+
+  main(client) {
+
+    this.client = client;
+    if (client.check_on_navigated()) {
+      this.view_display();
+    } else if (client.check_on_event()) {
+      this.on_event();
+    }
+
+  }
+
+  view_display() {
+
+    let view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "View", ns: "mvc" })
+            .a({ n: "displayBlock", v: "true" })
+            .a({ n: "height",       v: "100%" })
+            .a({ n: "xmlns",        v: "sap.m" })
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
+
+    view           = view.ele("Shell")
+        .ele("Page")
+            .a({ n: "title",          v: "abap2UI5 - Menu - Menu as Popover with core:require" })
+            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
+            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() })
+            .a({ n: "id",             v: "page_main" });
+
+    view.tag("MessageStrip")
+        .a({ n: "text",     v: "This sample opens a Menu as a popover anchored to a button; choosing an " +
+                   "item shows the selected action in a MessageToast." })
+        .a({ n: "type",     v: "Information" })
+        .a({ n: "showIcon", b: true })
+        .a({ n: "class",    v: "sapUiSmallMargin" });
+
+    const vbox = view.ele("VBox");
+
+    vbox.tag("Button")
+        .a({ n: "press", v: this.client._event("OPEN_MENU") })
+        .a({ n: "text",  v: "Open Menu" })
+        .a({ n: "id",    v: "menuButton" })
+        .a({ n: "class", v: "sapUiSmallMargin" });
+
+    this.client.view_display(view.stringify());
+
+  }
 
   on_event() {
 
@@ -53,52 +99,6 @@ defineApp("Z2UI5_CL_SMP_APP_163", class {
             .a({ n: "text",  v: "Other" });
 
     this.client.popover_display({ xml: menu_view.stringify(), by_id: "menuButton" });
-
-  }
-
-  view_display() {
-
-    let view = z2ui5_cl_ui5_view_builder.factory()
-        .ele({ n: "View", ns: "mvc" })
-            .a({ n: "displayBlock", v: "true" })
-            .a({ n: "height",       v: "100%" })
-            .a({ n: "xmlns",        v: "sap.m" })
-            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" });
-
-    view           = view.ele("Shell")
-        .ele("Page")
-            .a({ n: "title",          v: "abap2UI5 - Menu - Menu as Popover with core:require" })
-            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
-            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() })
-            .a({ n: "id",             v: "page_main" });
-
-    view.tag("MessageStrip")
-        .a({ n: "text",     v: "This sample opens a Menu as a popover anchored to a button; choosing an " +
-                   "item shows the selected action in a MessageToast." })
-        .a({ n: "type",     v: "Information" })
-        .a({ n: "showIcon", b: true })
-        .a({ n: "class",    v: "sapUiSmallMargin" });
-
-    const vbox = view.ele("VBox");
-
-    vbox.tag("Button")
-        .a({ n: "press", v: this.client._event("OPEN_MENU") })
-        .a({ n: "text",  v: "Open Menu" })
-        .a({ n: "id",    v: "menuButton" })
-        .a({ n: "class", v: "sapUiSmallMargin" });
-
-    this.client.view_display(view.stringify());
-
-  }
-
-  main(client) {
-
-    this.client = client;
-    if (client.check_on_navigated()) {
-      this.view_display();
-    } else if (client.check_on_event()) {
-      this.on_event();
-    }
 
   }
 });

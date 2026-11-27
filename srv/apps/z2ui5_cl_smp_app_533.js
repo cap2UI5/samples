@@ -24,11 +24,14 @@ defineApp("Z2UI5_CL_SMP_APP_533", class {
     } else if (client.check_on_event("NEXT")) {
 
       this.step = this.step + 1;
+      // the rebuild is the subject: each step is a new view, and the page
+      // transition only plays when a view is displayed
       this.view_display();
 
     } else if (client.check_on_event("PREVIOUS")) {
 
       this.step = this.step - 1;
+      // as above, and the rebuilt view is what carries transition_back
       this.view_display(true);
 
     } else if (client.check_on_event("DONE")) {

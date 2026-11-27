@@ -18,35 +18,12 @@ defineApp("Z2UI5_CL_SMP_APP_143", class {
 
     this.client = client;
     if (client.check_on_init()) {
-      this.on_init();
+      this.model_init();
+      this.view_display();
     } else if (client.check_on_navigated()) {
       this.view_display();
     } else if (client.check_on_event()) {
       this.on_event();
-    }
-
-  }
-
-  on_init() {
-
-    this.gt_data = [
-      { field1: "21", field2: "T1", field3: "TEXT1" },
-      { field1: "22", field2: "T1", field3: "TEXT1" },
-      { field1: "23", field2: "T2", field3: "TEXT1" },
-      { field1: "24", field2: "T2", field3: "TEXT2" },
-      { field1: "25", field2: "T3", field3: "TEXT2" } ];
-
-    this.view_display();
-
-  }
-
-  on_event() {
-
-    // the roundtrip re-renders the view on purpose: that is the model update
-    // the column filters have to survive
-    if (this.client.check_on_event("ROW_ACTION_ITEM_ADD")) {
-      this.client.message_toast_display(`row ${this.client.get_event_arg()} pressed`);
-      this.view_display();
     }
 
   }
@@ -137,16 +114,38 @@ defineApp("Z2UI5_CL_SMP_APP_143", class {
                 .tag("Text")
                     .a({ n: "text", v: "{FIELD3}" })
             .end()
-        .end()
-    .end()
-        .ele({ n: "rowActionTemplate", ns: "table" })
-            .ele({ n: "RowAction", ns: "table" })
-                .ele({ n: "RowActionItem", ns: "table" })
-                    .a({ n: "icon",  v: "sap-icon://add" })
-                    .a({ n: "text",  v: "Add" })
-                    .a({ n: "press", v: this.client._event({ val: "ROW_ACTION_ITEM_ADD", arg: "${FIELD1}" }) });
+        .end();
+
+    table.ele({ n: "rowActionTemplate", ns: "table" })
+        .ele({ n: "RowAction", ns: "table" })
+            .ele({ n: "RowActionItem", ns: "table" })
+                .a({ n: "icon",  v: "sap-icon://add" })
+                .a({ n: "text",  v: "Add" })
+                .a({ n: "press", v: this.client._event({ val: "ROW_ACTION_ITEM_ADD", arg: "${FIELD1}" }) });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    // the roundtrip re-renders the view on purpose: that is the model update
+    // the column filters have to survive
+    if (this.client.check_on_event("ROW_ACTION_ITEM_ADD")) {
+      this.client.message_toast_display(`row ${this.client.get_event_arg()} pressed`);
+      this.view_display();
+    }
+
+  }
+
+  model_init() {
+
+    this.gt_data = [
+      { field1: "21", field2: "T1", field3: "TEXT1" },
+      { field1: "22", field2: "T1", field3: "TEXT1" },
+      { field1: "23", field2: "T2", field3: "TEXT1" },
+      { field1: "24", field2: "T2", field3: "TEXT2" },
+      { field1: "25", field2: "T3", field3: "TEXT2" } ];
 
   }
 });

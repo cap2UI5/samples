@@ -37,73 +37,14 @@ defineApp("Z2UI5_CL_SMP_APP_327", class {
 
     this.client = client;
     if (client.check_on_init()) {
-      this.on_init();
+      this.model_init();
+      this.view_display();
     } else if (client.check_on_navigated()) {
       this.view_display();
     } else if (client.check_on_event()) {
       this.on_event();
     }
 
-  }
-
-  on_init() {
-
-    this.t_types   = [ { type: "local" }, { type: "session" } ];
-    this.s_storage = { type:   "local",
-                         prefix: "prefix1",
-                         key:    "key1",
-                         value:  { field1: "1",
-                                           field2: "textfld1" } };
-
-    this.view_display();
-
-  }
-
-  on_event() {
-    let lv_json;
-
-    switch (this.client.get_event()) {
-
-      case "LOCAL_STORAGE_LOADED":
-        // The z2ui5:Storage control read a value out of the browser storage
-        // and reports it through its `finished` event. The payload is a whole
-        // structure, so it arrives as JSON - here it is picked apart field by
-        // field, which is also what keeps this tolerant: whatever sits under
-        // the key may carry more (or other) fields than this app models - an
-        // earlier shape, or a value someone else wrote. A field that is not
-        // there simply stays empty.
-        lv_json = this.client.get_event_arg(4);
-        this.s_storage = { ...this.s_storage, value: { field1: this.json_get_value({ json: lv_json,
-                                                            name: "FIELD1" }),
-                                   field2: this.json_get_value({ json: lv_json,
-                                                            name: "FIELD2" }) } };
-        break;
-
-      case "GET_STORED_VALUE":
-        this.s_storage = { ...this.s_storage, value: this.s_stored_value };
-        break;
-
-    }
-
-  }
-
-  json_get_value({ json, name } = {}) {
-    let result = "";
-
-    // A minimal reader for one string field of a flat JSON object: find
-    // `"<name>":"` and take what stands up to the next quote. The model writes
-    // the ABAP component names in upper case, hence the case-insensitive
-    // search. An app parsing arbitrary JSON wants a real parser instead.
-    const lv_marker = `"${name}":"`;
-
-    const lv_off = json.toLowerCase().indexOf(lv_marker.toLowerCase());
-    if (lv_off < 0) {
-      return result;
-    }
-
-    result = ((json.substr(lv_off + lv_marker.length)).includes(("\"")) ? (json.substr(lv_off + lv_marker.length)).slice(0, (json.substr(lv_off + lv_marker.length)).indexOf(("\""))) : "");
-
-    return result;
   }
 
   view_display() {
@@ -191,6 +132,70 @@ defineApp("Z2UI5_CL_SMP_APP_327", class {
         .a({ n: "value",  v: this.client._bind("s_stored_value") });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+    let lv_json;
+
+    switch (this.client.get_event()) {
+
+      case "LOCAL_STORAGE_LOADED":
+        // The z2ui5:Storage control read a value out of the browser storage
+        // and reports it through its `finished` event. The payload is a whole
+        // structure, so it arrives as JSON - here it is picked apart field by
+        // field, which is also what keeps this tolerant: whatever sits under
+        // the key may carry more (or other) fields than this app models - an
+        // earlier shape, or a value someone else wrote. A field that is not
+        // there simply stays empty.
+        lv_json = this.client.get_event_arg(4);
+        this.s_storage = { ...this.s_storage, value: { field1: this.json_get_value({ json: lv_json,
+                                                            name: "FIELD1" }),
+                                   field2: this.json_get_value({ json: lv_json,
+                                                            name: "FIELD2" }) } };
+        break;
+
+      case "GET_STORED_VALUE":
+        // The z2ui5:Storage control reads the storage only when it renders,
+        // and `store` writes it on the client without a roundtrip - so the
+        // last value read may be stale. Take it, and re-display: the fresh
+        // control reads the key again and reports a newer value through
+        // `finished` (LOCAL_STORAGE_LOADED above).
+        this.s_storage = { ...this.s_storage, value: this.s_stored_value };
+        this.view_display();
+        break;
+
+    }
+
+  }
+
+  json_get_value({ json, name } = {}) {
+    let result = "";
+
+    // A minimal reader for one string field of a flat JSON object: find
+    // `"<name>":"` and take what stands up to the next quote. The model writes
+    // the ABAP component names in upper case, hence the case-insensitive
+    // search. An app parsing arbitrary JSON wants a real parser instead.
+    const lv_marker = `"${name}":"`;
+
+    const lv_off = json.toLowerCase().indexOf(lv_marker.toLowerCase());
+    if (lv_off < 0) {
+      return result;
+    }
+
+    result = ((json.substr(lv_off + lv_marker.length)).includes(("\"")) ? (json.substr(lv_off + lv_marker.length)).slice(0, (json.substr(lv_off + lv_marker.length)).indexOf(("\""))) : "");
+
+    return result;
+  }
+
+  model_init() {
+
+    this.t_types   = [ { type: "local" }, { type: "session" } ];
+    this.s_storage = { type:   "local",
+                         prefix: "prefix1",
+                         key:    "key1",
+                         value:  { field1: "1",
+                                           field2: "textfld1" } };
 
   }
 });

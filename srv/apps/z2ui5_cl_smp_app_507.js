@@ -39,7 +39,7 @@ defineApp("Z2UI5_CL_SMP_APP_507", class {
       this.t_plain = [
         { name: "Handling", value: 4, maxvalue: 5,  enabled: true,  note: "maxValue 5, enabled" },
         { name: "Price",    value: 7, maxvalue: 10, enabled: true,  note: "maxValue 10, enabled" },
-        { name: "Design",   value: 3,                enabled: true,  note: "NO maxValue - the UI5 default 5 is meant" },
+        { name: "Design",   value: 3, maxvalue: 0,  enabled: true,  note: "NO maxValue - the UI5 default 5 is meant" },
         { name: "Archived", value: 2, maxvalue: 5,  enabled: false, note: "maxValue 5, NOT enabled" } ];
       this.t_omit  = this.t_plain;
       this.t_paths = this.t_plain;
@@ -87,6 +87,7 @@ defineApp("Z2UI5_CL_SMP_APP_507", class {
     this.render_list({ parent: row,
                  title:  "_bind( t_omit omit_initial = abap_true )",
                  descr:  "initial fields stay out: Design shows 5 stars - but Archived is enabled now, its abap_false was initial too",
+                 // the dropped abap_false IS the demo: the third list shows the fix
                  items:  this.client._bind({ val:          "t_omit",
                                          omit_initial: true }) });
 

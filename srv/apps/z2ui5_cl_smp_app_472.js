@@ -23,29 +23,6 @@ defineApp("Z2UI5_CL_SMP_APP_472", class {
 
   }
 
-  on_event() {
-
-    switch (this.client.get_event()) {
-
-      case "LINK_PRESS":
-
-        if (this.block_navigation === true) {
-          this.last_press = "Link pressed - the browser did NOT follow the href, the backend decides what happens.";
-        } else {
-          this.last_press = "Link pressed - the href was followed by the browser as usual.";
-        }
-        break;
-
-      case "TOGGLE":
-        // the flag is part of the event registration, so the view has to be
-        // rebuilt for the change to reach the frontend
-        this.view_display();
-        break;
-
-    }
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -77,25 +54,53 @@ defineApp("Z2UI5_CL_SMP_APP_472", class {
         .ele({ n: "content", ns: "form" });
 
     form.tag("Label")
-        .a({ n: "text", v: "Cancel the browser navigation" })
-        .tag("Switch")
-            .a({ n: "state",  v: this.client._bind("block_navigation") })
-            .a({ n: "change", v: this.client._event("TOGGLE") })
-        .tag("Label")
-            .a({ n: "text", v: "Link" })
-        .tag("Link")
-            .a({ n: "text",   v: "Open abap2ui5.org" })
-            .a({ n: "target", v: "_blank" })
-            .a({ n: "href",   v: "https://abap2ui5.org" })
-            .a({ n: "press",  v: this.client._event({
-                val:    "LINK_PRESS",
-                s_ctrl: { check_prevent_default: this.block_navigation } }) })
-        .tag("Label")
-            .a({ n: "text", v: "Result" })
-        .tag("Text")
-            .a({ n: "text", v: this.client._bind("last_press") });
+        .a({ n: "text", v: "Cancel the browser navigation" });
+
+    form.tag("Switch")
+        .a({ n: "state",  v: this.client._bind("block_navigation") })
+        .a({ n: "change", v: this.client._event("TOGGLE") });
+
+    form.tag("Label")
+        .a({ n: "text", v: "Link" });
+
+    form.tag("Link")
+        .a({ n: "text",   v: "Open abap2ui5.org" })
+        .a({ n: "target", v: "_blank" })
+        .a({ n: "href",   v: "https://abap2ui5.org" })
+        .a({ n: "press",  v: this.client._event({
+            val:    "LINK_PRESS",
+            s_ctrl: { check_prevent_default: this.block_navigation } }) });
+
+    form.tag("Label")
+        .a({ n: "text", v: "Result" });
+
+    form.tag("Text")
+        .a({ n: "text", v: this.client._bind("last_press") });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    switch (this.client.get_event()) {
+
+      case "LINK_PRESS":
+
+        if (this.block_navigation === true) {
+          this.last_press = "Link pressed - the browser did NOT follow the href, the backend decides what happens.";
+        } else {
+          this.last_press = "Link pressed - the href was followed by the browser as usual.";
+        }
+        break;
+
+      case "TOGGLE":
+        // the flag is part of the event registration, so the view has to be
+        // rebuilt for the change to reach the frontend
+        this.view_display();
+        break;
+
+    }
 
   }
 });

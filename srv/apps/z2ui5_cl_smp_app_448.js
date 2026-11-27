@@ -6,7 +6,8 @@ import { defineApp, z2ui5_cl_ui5_view_builder, z2ui5_if_client } from "@cap2ui5/
 
 defineApp("Z2UI5_CL_SMP_APP_448", class {
 
-  // not bound - mirrors the panel state so the toggle can invert it
+  // not bound - mirrors the panel state so the toggle can invert it; the
+  // panel's expand event keeps it in step when the header is clicked
   expanded = false;
 
   main(client) {
@@ -16,24 +17,6 @@ defineApp("Z2UI5_CL_SMP_APP_448", class {
       this.view_display();
     } else if (client.check_on_event()) {
       this.on_event();
-    }
-
-  }
-
-  on_event() {
-
-    if (this.client.get_event() === "TOGGLE") {
-      // invert the mirrored state and call the whitelisted setExpanded on
-      // the panel - client-side, after the response renders, no rebuild.
-      // t_arg is positional: id, method, params (the view defaults to
-      // cs_view-main and can be omitted for a main-view control)
-      this.expanded = (this.expanded === false);
-      // Driving a property through control_by_id IS this sample; the plain
-      // binding the rule recommends is what z2ui5_cl_smp_app_449 shows instead.
-      this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
-                                t_arg: [ "demoPanel",
-                                                 "setExpanded",
-                                                 (this.expanded ? "X" : "") ] });
     }
 
   }
@@ -73,10 +56,36 @@ defineApp("Z2UI5_CL_SMP_APP_448", class {
         .a({ n: "id",         v: "demoPanel" })
         .a({ n: "class",      v: "sapUiSmallMargin" })
         .a({ n: "headerText", v: "Collapsible panel" })
+        .a({ n: "expand",     v: this.client._event({ val: "PANEL_EXPAND", arg: "${$parameters>/expand}" }) })
         .tag("Text")
             .a({ n: "text", v: "Content of the panel - collapsed and expanded from the backend without a roundtrip payload." });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    switch (this.client.get_event()) {
+      case "PANEL_EXPAND":
+        // the user expanded or collapsed the panel by its own header - and
+        // setExpanded fires this as well - so the mirror follows the panel
+        this.expanded = (this.client.get_event_arg() === (true ? "X" : ""));
+        break;
+      case "TOGGLE":
+        // invert the mirrored state and call the whitelisted setExpanded on
+        // the panel - client-side, after the response renders, no rebuild.
+        // t_arg is positional: id, method, params (the view defaults to
+        // cs_view-main and can be omitted for a main-view control)
+        this.expanded = (this.expanded === false);
+        // Driving a property through control_by_id IS this sample; the plain
+        // binding the rule recommends would be expanded = _bind( expanded ).
+        this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
+                                  t_arg: [ "demoPanel",
+                                                   "setExpanded",
+                                                   (this.expanded ? "X" : "") ] });
+        break;
+    }
 
   }
 });

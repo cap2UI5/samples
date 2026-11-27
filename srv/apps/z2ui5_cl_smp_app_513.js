@@ -20,60 +20,6 @@ defineApp("Z2UI5_CL_SMP_APP_513", class {
 
   }
 
-  css_set({ property, value } = {}) {
-
-    // t_arg is positional: id, the pseudo-method `css`, the property, the value.
-    // `css` is not a UI5 method - it is a frontend capability in method form,
-    // and only ten properties are allowed: width, min-width, max-width,
-    // height, min-height, max-height, color, background-color, font-size and
-    // opacity. Anything else is refused and logged, never applied.
-    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
-                              t_arg: [ "demoPanel",
-                                               "css",
-                                               property,
-                                               value ] });
-
-  }
-
-  on_event() {
-
-    switch (this.client.get_event()) {
-
-      case "HIGHLIGHT":
-        this.highlighted = (this.highlighted === false);
-        // sap.m.Panel carries no background colour and no font size, so there
-        // is no property to bind and nothing a formatter could reach. The
-        // declaration lands on the panel's own DOM node.
-        if (this.highlighted === true) {
-          this.css_set({ property: "background-color",
-                   value:    "#fff4e5" });
-          this.css_set({ property: "font-size",
-                   value:    "1.25rem" });
-        } else {
-          // an empty value removes the declaration again
-          this.css_set({ property: "background-color",
-                   value:    "" });
-          this.css_set({ property: "font-size",
-                   value:    "" });
-        }
-        break;
-
-      case "FADE":
-        this.css_set({ property: "opacity",
-                 value:    "0.35" });
-        break;
-
-      case "RESET":
-        // the declaration lives on the element and is gone after a re-render,
-        // so a fresh view is the other way back to the control's own styling
-        this.highlighted = false;
-        this.view_display();
-        break;
-
-    }
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -125,6 +71,60 @@ defineApp("Z2UI5_CL_SMP_APP_513", class {
                        "Every one of them is set here from ABAP, client-side after the response renders." });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    switch (this.client.get_event()) {
+
+      case "HIGHLIGHT":
+        this.highlighted = (this.highlighted === false);
+        // sap.m.Panel carries no background colour and no font size, so there
+        // is no property to bind and nothing a formatter could reach. The
+        // declaration lands on the panel's own DOM node.
+        if (this.highlighted === true) {
+          this.css_set({ property: "background-color",
+                   value:    "#fff4e5" });
+          this.css_set({ property: "font-size",
+                   value:    "1.25rem" });
+        } else {
+          // an empty value removes the declaration again
+          this.css_set({ property: "background-color",
+                   value:    "" });
+          this.css_set({ property: "font-size",
+                   value:    "" });
+        }
+        break;
+
+      case "FADE":
+        this.css_set({ property: "opacity",
+                 value:    "0.35" });
+        break;
+
+      case "RESET":
+        // the declaration lives on the element and is gone after a re-render,
+        // so a fresh view is the other way back to the control's own styling
+        this.highlighted = false;
+        this.view_display();
+        break;
+
+    }
+
+  }
+
+  css_set({ property, value } = {}) {
+
+    // t_arg is positional: id, the pseudo-method `css`, the property, the value.
+    // `css` is not a UI5 method - it is a frontend capability in method form,
+    // and only ten properties are allowed: width, min-width, max-width,
+    // height, min-height, max-height, color, background-color, font-size and
+    // opacity. Anything else is refused and logged, never applied.
+    this.client.follow_up_action({ val:   z2ui5_if_client.cs_event.control_by_id,
+                              t_arg: [ "demoPanel",
+                                               "css",
+                                               property,
+                                               value ] });
 
   }
 });

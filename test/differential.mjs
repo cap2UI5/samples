@@ -22,7 +22,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { test } from "node:test";
 import { pathToFileURL } from "node:url";
-import { actions, post, ROOT, serve } from "./server.mjs";
+import { actions, post, ROOT, serve, views as slots } from "./server.mjs";
 
 const s = serve();
 const ORIGINALS = path.join(ROOT, "test", ".originals");
@@ -46,14 +46,16 @@ async function loadOriginals() {
 // the two sides' names, and the draft ids every roundtrip draws anew
 const norm = (x) => String(x ?? "").replace(/ZABAP_SMP_APP_/g, "Z2UI5_CL_SMP_APP_")
   .replace(/zabap_smp_app_/g, "z2ui5_cl_smp_app_").replace(/[0-9A-F]{32}/g, "<ID>");
-const views = (r) => actions(r).filter((a) => a[0] === "VIEW_SLOTS").map((a) => norm(JSON.stringify(a)));
-const others = (r) => norm(JSON.stringify(actions(r).filter((a) => a[0] !== "VIEW_SLOTS")));
+// one string per slot the response changes, and everything else it says - the URL intent and the actions
+const views = (r) => Object.entries(slots(r)).sort(([a], [b]) => a.localeCompare(b)).map((e) => norm(JSON.stringify(e)));
+const others = (r) => norm(JSON.stringify([r.json?.S_FRONT?.NAV ?? null, actions(r)]));
 /** the events a response's views wire: .eB(['NAME', …]) with their literal arguments */
 const wired = (r) => {
   const out = new Map();
-  for (const v of actions(r).filter((a) => a[0] === "VIEW_SLOTS")) {
-    for (const m of String(v[3] ?? "").matchAll(/\.eB\(\[([^\]]*)\]/g)) {
-      const [name, ...rest] = m[1].split(",").map((x) => x.trim());
+  for (const v of Object.values(slots(r))) {
+    for (const m of String(v.XML ?? "").matchAll(/\.eB\(\[([^\]]*)\]/g)) {
+      // the flags of a wire are one object behind the event's name (protocol 3) - no argument
+      const [name, ...rest] = m[1].replace(/,\s*\{[^}]*\}/, "").split(",").map((x) => x.trim());
       const event = name?.replace(/^'|'$/g, "");
       if (event && !out.has(event)) out.set(event, rest.map((x) => (/^'.*'$/.test(x) ? x.slice(1, -1) : "x")));
     }

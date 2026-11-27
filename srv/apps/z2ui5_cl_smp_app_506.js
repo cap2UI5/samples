@@ -1,4 +1,4 @@
-// @keywords event argument literal quoted expression evaluated check_arg_literal t_arg data binding syntax dollar brace
+// @keywords event argument literal quoted expression evaluated check_arg_literal t_arg data binding syntax dollar brace _bind_path
 // @summary An event argument that starts with $ or { is live UI5 expression syntax and gets resolved on the client - check_arg_literal sends it as the text it is.
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_506.clas.abap
 //
@@ -30,7 +30,7 @@ defineApp("Z2UI5_CL_SMP_APP_506", class {
       this.price    = "1299.00";
       // the argument both wires start with: the client-side spelling of the
       // bound price, composed from the bind so the path is a registered one
-      this.argument = `\${${client._bind({ val: "price", path: true })}}`;
+      this.argument = `\${${client._bind_path("price")}}`;
       this.raw_arg  = "-";
       this.lit_arg  = "-";
       this.view_display();
@@ -39,33 +39,6 @@ defineApp("Z2UI5_CL_SMP_APP_506", class {
       this.view_display();
     } else if (client.check_on_event()) {
       this.on_event();
-    }
-
-  }
-
-  on_event() {
-
-    switch (this.client.get_event()) {
-
-      case "RAW":
-        // what the client resolved: `${/PRICE}` names the bound price, so
-        // its value arrives, not the text
-        this.raw_arg = this.client.get_event_arg();
-        break;
-
-      case "LITERAL":
-        // the same argument, quoted by check_arg_literal: the text arrives
-        this.lit_arg = this.client.get_event_arg();
-        break;
-
-      case "REBUILD":
-        // the argument is written into the view at render time, so a new
-        // text needs a new view - the two wires below carry it from then on
-        this.raw_arg = "-";
-        this.lit_arg = "-";
-        this.view_display();
-        break;
-
     }
 
   }
@@ -116,7 +89,7 @@ defineApp("Z2UI5_CL_SMP_APP_506", class {
     // the raw wire is kept on the binding shape the sample starts with: any
     // other text typed above is only sent through the literal wire, because
     // an argument that is not valid expression syntax would break the view
-    const raw_expr = `\${${this.client._bind({ val: "price", path: true })}}`;
+    const raw_expr = `\${${this.client._bind_path("price")}}`;
     form.tag("Label")
         .a({ n: "text", v: "Raw - resolved on the client" });
     form.tag("Button")
@@ -138,6 +111,33 @@ defineApp("Z2UI5_CL_SMP_APP_506", class {
         .a({ n: "text", v: this.client._bind("lit_arg") });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    switch (this.client.get_event()) {
+
+      case "RAW":
+        // what the client resolved: `${/PRICE}` names the bound price, so
+        // its value arrives, not the text
+        this.raw_arg = this.client.get_event_arg();
+        break;
+
+      case "LITERAL":
+        // the same argument, quoted by check_arg_literal: the text arrives
+        this.lit_arg = this.client.get_event_arg();
+        break;
+
+      case "REBUILD":
+        // the argument is written into the view at render time, so a new
+        // text needs a new view - the two wires below carry it from then on
+        this.raw_arg = "-";
+        this.lit_arg = "-";
+        this.view_display();
+        break;
+
+    }
 
   }
 });

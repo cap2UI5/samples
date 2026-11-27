@@ -29,47 +29,17 @@ defineApp("Z2UI5_CL_SMP_APP_122", class {
   os_label               = "";
   orientation_label      = "";
 
-  read_frontend_info() {
+  main(client) {
 
-    const ls_get = this.client.get();
+    this.client = client;
+    if (client.check_on_init()) {
 
-    this.device_browser         = ls_get.s_device.browser.name;
-    this.device_browser_version = ls_get.s_device.browser.version;
-    this.device_os              = ls_get.s_device.os.name;
-    this.device_os_version      = ls_get.s_device.os.version;
-    this.device_systemtype      = ls_get.s_device.system;
-    this.device_orientation     = ls_get.s_device.orientation;
-    this.device_height          = String(ls_get.s_device.resize.height);
-    this.device_width           = String(ls_get.s_device.resize.width);
-    this.device_phone           = (ls_get.s_device.system === z2ui5_if_client.cs_device.system.phone);
-    this.device_desktop         = (ls_get.s_device.system === z2ui5_if_client.cs_device.system.desktop);
-    this.device_tablet          = (ls_get.s_device.system === z2ui5_if_client.cs_device.system.tablet);
-    this.device_combi           = (ls_get.s_device.system === z2ui5_if_client.cs_device.system.combi);
-    this.device_touch           = ls_get.s_device.support.touch;
-    this.device_pointer         = ls_get.s_device.support.pointer;
-    this.device_retina          = ls_get.s_device.support.retina;
-    this.ui5_version            = ls_get.s_ui5.version;
-    this.ui5_theme              = ls_get.s_ui5.theme;
-    this.ui5_gav                = ls_get.s_ui5.gav;
-    this.ui5_build_timestamp    = ls_get.s_ui5.build_timestamp;
+      this.read_frontend_info();
+      this.view_display();
+    } else if (client.check_on_navigated()) {
+      this.view_display();
 
-    // the raw values are short codes (cr, ff, win, mac, ...). cs_device
-    // names every one of them, so an app branches on the constant rather
-    // than on a string it would have to know - here into a label per group
-    this.browser_label = (ls_get.s_device.browser.name === z2ui5_if_client.cs_device.browser.chrome ? "Google Chrome (or Chromium)"
-                              : ls_get.s_device.browser.name === z2ui5_if_client.cs_device.browser.firefox ? "Mozilla Firefox"
-                              : ls_get.s_device.browser.name === z2ui5_if_client.cs_device.browser.safari ? "Apple Safari"
-                              : ls_get.s_device.browser.name === z2ui5_if_client.cs_device.browser.edge ? "Microsoft Edge"
-                              : "not one cs_device-browser names");
-    this.os_label      = (ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.windows ? "Windows"
-                              : ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.macintosh ? "macOS"
-                              : ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.linux ? "Linux"
-                              : ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.ios ? "iOS"
-                              : ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.android ? "Android"
-                              : "not one cs_device-os names");
-    this.orientation_label = (ls_get.s_device.orientation === z2ui5_if_client.cs_device.orientation.portrait ? "portrait - one column would fit best"
-                                  : ls_get.s_device.orientation === z2ui5_if_client.cs_device.orientation.landscape ? "landscape - room for two columns"
-                                  : "not one cs_device-orientation names");
+    }
 
   }
 
@@ -215,17 +185,47 @@ defineApp("Z2UI5_CL_SMP_APP_122", class {
 
   }
 
-  main(client) {
+  read_frontend_info() {
 
-    this.client = client;
-    if (client.check_on_init()) {
+    const ls_get = this.client.get();
 
-      this.read_frontend_info();
-      this.view_display();
-    } else if (client.check_on_navigated()) {
-      this.view_display();
+    this.device_browser         = ls_get.s_device.browser.name;
+    this.device_browser_version = ls_get.s_device.browser.version;
+    this.device_os              = ls_get.s_device.os.name;
+    this.device_os_version      = ls_get.s_device.os.version;
+    this.device_systemtype      = ls_get.s_device.system;
+    this.device_orientation     = ls_get.s_device.orientation;
+    this.device_height          = ls_get.s_device.resize.height;
+    this.device_width           = ls_get.s_device.resize.width;
+    this.device_phone           = (ls_get.s_device.system === z2ui5_if_client.cs_device.system.phone);
+    this.device_desktop         = (ls_get.s_device.system === z2ui5_if_client.cs_device.system.desktop);
+    this.device_tablet          = (ls_get.s_device.system === z2ui5_if_client.cs_device.system.tablet);
+    this.device_combi           = (ls_get.s_device.system === z2ui5_if_client.cs_device.system.combi);
+    this.device_touch           = ls_get.s_device.support.touch;
+    this.device_pointer         = ls_get.s_device.support.pointer;
+    this.device_retina          = ls_get.s_device.support.retina;
+    this.ui5_version            = ls_get.s_ui5.version;
+    this.ui5_theme              = ls_get.s_ui5.theme;
+    this.ui5_gav                = ls_get.s_ui5.gav;
+    this.ui5_build_timestamp    = ls_get.s_ui5.build_timestamp;
 
-    }
+    // the raw values are short codes (cr, ff, win, mac, ...). cs_device
+    // names every one of them, so an app branches on the constant rather
+    // than on a string it would have to know - here into a label per group
+    this.browser_label = (ls_get.s_device.browser.name === z2ui5_if_client.cs_device.browser.chrome ? "Google Chrome (or Chromium)"
+                              : ls_get.s_device.browser.name === z2ui5_if_client.cs_device.browser.firefox ? "Mozilla Firefox"
+                              : ls_get.s_device.browser.name === z2ui5_if_client.cs_device.browser.safari ? "Apple Safari"
+                              : ls_get.s_device.browser.name === z2ui5_if_client.cs_device.browser.edge ? "Microsoft Edge"
+                              : "not one cs_device-browser names");
+    this.os_label      = (ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.windows ? "Windows"
+                              : ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.macintosh ? "macOS"
+                              : ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.linux ? "Linux"
+                              : ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.ios ? "iOS"
+                              : ls_get.s_device.os.name === z2ui5_if_client.cs_device.os.android ? "Android"
+                              : "not one cs_device-os names");
+    this.orientation_label = (ls_get.s_device.orientation === z2ui5_if_client.cs_device.orientation.portrait ? "portrait - one column would fit best"
+                                  : ls_get.s_device.orientation === z2ui5_if_client.cs_device.orientation.landscape ? "landscape - room for two columns"
+                                  : "not one cs_device-orientation names");
 
   }
 });

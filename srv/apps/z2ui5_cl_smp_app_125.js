@@ -33,11 +33,11 @@ defineApp("Z2UI5_CL_SMP_APP_125", class {
           .a({ n: "class",    v: "sapUiSmallMargin" });
 
       page.ele({ n: "SimpleForm", ns: "form" })
-          .a({ n: "title",    v: "Form Title" })
+          .a({ n: "title",    v: "Browser Tab Title" })
           .a({ n: "editable", b: true })
           .ele({ n: "content", ns: "form" })
               .tag("Label")
-                  .a({ n: "text", v: "title" })
+                  .a({ n: "text", v: "Tab title" })
               .tag("Input")
                   .a({ n: "value", v: client._bind("title") })
               .tag("Button")

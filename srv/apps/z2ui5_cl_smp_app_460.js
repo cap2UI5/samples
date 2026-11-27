@@ -37,7 +37,7 @@ defineApp("Z2UI5_CL_SMP_APP_460", class {
           { text: "Pictures", nodes: [
               { text: "Vacation", nodes: [
                   { text: "Beach.jpg" } ] } ] },
-          { text: "Music" } ];
+          { text: "Music", nodes: [] } ];
       this.view_display();
     } else if (client.check_on_navigated()) {
       this.view_display();

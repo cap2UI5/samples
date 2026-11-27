@@ -14,7 +14,7 @@ defineApp("Z2UI5_CL_SMP_APP_492", class {
     if (client.check_on_navigated()) {
 
       const s_config = client.get().s_config;
-      this.url = s_config.pathname + s_config.search;
+      this.url = `${s_config.pathname}${s_config.search}`;
 
       const view = z2ui5_cl_ui5_view_builder.factory()
           .ele({ n: "View", ns: "mvc" })

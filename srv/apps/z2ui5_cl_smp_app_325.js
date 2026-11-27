@@ -1,4 +1,4 @@
-// @keywords clipboard paste copy text area
+// @keywords clipboard paste copy text area clipboard_copy
 // @summary Copies text into the browser clipboard from the backend: a follow-up action carries the string, a toast confirms what landed there.
 // @docs https://abap2ui5.github.io/docs/cookbook/browser_interaction/clipboard
 // @origin abap2UI5/samples src/z2ui5_cl_smp_app_325.clas.abap
@@ -98,22 +98,19 @@ defineApp("Z2UI5_CL_SMP_APP_325", class {
 
       client.view_display(view.stringify());
 
-    }
+    } else if (client.check_on_event("COPY_INPUT")) {
 
-    switch (client.get_event()) {
-      case "COPY_INPUT":
-        client.follow_up_action({
-            val:   z2ui5_if_client.cs_event.clipboard_copy,
-            t_arg: [ this.input ] });
-        client.message_toast_display(`input field copied: ${this.input}`);
-        break;
+      client.follow_up_action({
+          val:   z2ui5_if_client.cs_event.clipboard_copy,
+          t_arg: [ this.input ] });
+      client.message_toast_display(`input field copied: ${this.input}`);
 
-      case "COPY_TEXT_AREA":
-        client.follow_up_action({
-            val:   z2ui5_if_client.cs_event.clipboard_copy,
-            t_arg: [ this.text ] });
-        client.message_toast_display(`text area copied: ${this.text}`);
-        break;
+    } else if (client.check_on_event("COPY_TEXT_AREA")) {
+
+      client.follow_up_action({
+          val:   z2ui5_if_client.cs_event.clipboard_copy,
+          t_arg: [ this.text ] });
+      client.message_toast_display(`text area copied: ${this.text}`);
 
     }
 

@@ -56,7 +56,6 @@
     "z2ui5_cl_smp_app_496",
     "z2ui5_cl_smp_app_498",
     "z2ui5_cl_smp_app_499",
-    "z2ui5_cl_smp_app_503",
     "z2ui5_cl_smp_app_506",
     "z2ui5_cl_smp_app_507",
     "z2ui5_cl_smp_app_508",
@@ -78,6 +77,7 @@
   "handwritten": {
     "z2ui5_cl_smp_app_011": "LOOP AT t_tab REFERENCE INTO writes through the row, and DELETE t_tab WHERE (abap2js: neither supported yet)",
     "z2ui5_cl_smp_app_176": "ASSIGN mt_layout[ fname = ... ] TO FIELD-SYMBOL( ) writes through the row (abap2js: ASSIGN not supported yet)",
-    "z2ui5_cl_smp_app_488": "ASSIGN ls_get-r_event_data->* TO FIELD-SYMBOL( ) (abap2js: not supported yet)"
+    "z2ui5_cl_smp_app_488": "ASSIGN ls_get-r_event_data->* TO FIELD-SYMBOL( ) (abap2js: not supported yet)",
+    "z2ui5_cl_smp_app_503": "TRY ... CATCH cx_sy_conversion_overflow around an assignment to TYPE i (abap2js: TRY not supported - a JavaScript number does not overflow, so there is nothing to translate the CATCH to)"
   }
 }

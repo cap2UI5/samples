@@ -32,36 +32,8 @@ defineApp("Z2UI5_CL_SMP_APP_536", class {
 
     } else if (client.check_on_navigated()) {
       this.view_display();
-    } else {
+    } else if (client.check_on_event()) {
       this.on_event();
-    }
-
-  }
-
-  on_event() {
-
-    switch (true) {
-
-      case this.client.check_on_event("STATIC"):
-        this.client.message_toast_display(`data( "mySuperExtraData" ) = ${this.client.get_event_arg()}`);
-        break;
-
-      case this.client.check_on_event("BOUND"):
-        this.client.message_toast_display(`data( "coords" ) = ${this.client.get_event_arg()}`);
-        break;
-
-      case this.client.check_on_event("ALL"):
-        // data( ) without a key answers a plain object - an object argument
-        // reaches the backend as its JSON text
-        this.client.message_toast_display(`data( ) = ${this.client.get_event_arg()}`);
-        break;
-
-      case this.client.check_on_event("SELECT"):
-        // the answer is not looked up in t_questions - it arrives as the
-        // custom data of the list item the user selected
-        this.answer = this.client.get_event_arg();
-        break;
-
     }
 
   }
@@ -148,6 +120,34 @@ defineApp("Z2UI5_CL_SMP_APP_536", class {
         .a({ n: "class", v: "sapUiResponsiveMargin" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    switch (true) {
+
+      case this.client.check_on_event("STATIC"):
+        this.client.message_toast_display(`data( "mySuperExtraData" ) = ${this.client.get_event_arg()}`);
+        break;
+
+      case this.client.check_on_event("BOUND"):
+        this.client.message_toast_display(`data( "coords" ) = ${this.client.get_event_arg()}`);
+        break;
+
+      case this.client.check_on_event("ALL"):
+        // data( ) without a key answers a plain object - an object argument
+        // reaches the backend as its JSON text
+        this.client.message_toast_display(`data( ) = ${this.client.get_event_arg()}`);
+        break;
+
+      case this.client.check_on_event("SELECT"):
+        // the answer is not looked up in t_questions - it arrives as the
+        // custom data of the list item the user selected
+        this.answer = this.client.get_event_arg();
+        break;
+
+    }
 
   }
 });

@@ -23,32 +23,6 @@ defineApp("Z2UI5_CL_SMP_APP_516", class {
 
   }
 
-  on_event() {
-
-    // The mode is an ordinary bound attribute, so switching the keyboard is a
-    // model update and nothing else - no follow-up action travels, and there
-    // is no ordering to get right between the action and the next render.
-    switch (this.client.get_event()) {
-      case "NUMERIC":
-        this.mode = "numeric";
-        break;
-      case "DECIMAL":
-        this.mode = "decimal";
-        break;
-      case "TEL":
-        this.mode = "tel";
-        break;
-      case "NONE":
-        this.mode = "none";
-        break;
-      case "OFF":
-        // empty leaves the field exactly as sap.m.Input rendered it
-        this.mode = "";
-        break;
-    }
-
-  }
-
   view_display() {
 
     const view = z2ui5_cl_ui5_view_builder.factory()
@@ -108,6 +82,32 @@ defineApp("Z2UI5_CL_SMP_APP_516", class {
             .a({ n: "text",  v: "plain sap.m.Input" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    // The mode is an ordinary bound attribute, so switching the keyboard is a
+    // model update and nothing else - no follow-up action travels, and there
+    // is no ordering to get right between the action and the next render.
+    switch (this.client.get_event()) {
+      case "NUMERIC":
+        this.mode = "numeric";
+        break;
+      case "DECIMAL":
+        this.mode = "decimal";
+        break;
+      case "TEL":
+        this.mode = "tel";
+        break;
+      case "NONE":
+        this.mode = "none";
+        break;
+      case "OFF":
+        // empty leaves the field exactly as sap.m.Input rendered it
+        this.mode = "";
+        break;
+    }
 
   }
 });

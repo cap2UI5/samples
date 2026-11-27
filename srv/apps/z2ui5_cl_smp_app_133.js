@@ -11,64 +11,6 @@ defineApp("Z2UI5_CL_SMP_APP_133", class {
   selstart = "";
   selend   = "";
 
-  view_display() {
-
-    const view = z2ui5_cl_ui5_view_builder.factory()
-        .ele({ n: "View", ns: "mvc" })
-            .a({ n: "displayBlock", v: "true" })
-            .a({ n: "height",       v: "100%" })
-            .a({ n: "xmlns",        v: "sap.m" })
-            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" })
-            .a({ n: "xmlns:form",   v: "sap.ui.layout.form" });
-
-    const page = view.ele("Shell")
-        .ele("Page")
-            .a({ n: "title",          v: "abap2UI5 - Focus - Set Focus and Select Text in an Input" })
-            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
-            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
-
-    page.tag("MessageStrip")
-        .a({ n: "text",     v: "Pressing a button runs the set_focus front-end action, which moves keyboard focus to the " +
-                   "target input and selects the text between the given start and end positions." })
-        .a({ n: "type",     v: "Information" })
-        .a({ n: "showIcon", b: true })
-        .a({ n: "class",    v: "sapUiSmallMargin" });
-
-    page.ele({ n: "SimpleForm", ns: "form" })
-        .a({ n: "title",    v: "Focus & Cursor" })
-        .a({ n: "editable", b: true })
-        .ele({ n: "content", ns: "form" })
-            .tag("Title")
-                .a({ n: "text", v: "Input" })
-            .tag("Label")
-                .a({ n: "text", v: "Sel_Start" })
-            .tag("Input")
-                .a({ n: "value", v: this.client._bind("selstart") })
-            .tag("Label")
-                .a({ n: "text", v: "Sel_End" })
-            .tag("Input")
-                .a({ n: "value", v: this.client._bind("selend") })
-            .tag("Label")
-                .a({ n: "text", v: "field_01" })
-            .tag("Input")
-                .a({ n: "id",    v: "BUTTON01" })
-                .a({ n: "value", v: this.client._bind("field_01") })
-            .tag("Button")
-                .a({ n: "press", v: this.client._event("BUTTON01") })
-                .a({ n: "text",  v: "focus here" })
-            .tag("Label")
-                .a({ n: "text", v: "field_02" })
-            .tag("Input")
-                .a({ n: "id",    v: "BUTTON02" })
-                .a({ n: "value", v: this.client._bind("field_02") })
-            .tag("Button")
-                .a({ n: "press", v: this.client._event("BUTTON02") })
-                .a({ n: "text",  v: "focus here" });
-
-    this.client.view_display(view.stringify());
-
-  }
-
   main(client) {
 
     this.client = client;
@@ -89,6 +31,65 @@ defineApp("Z2UI5_CL_SMP_APP_133", class {
           t_arg: [ client.get_event(), this.selstart, this.selend ] });
       client.message_toast_display(`focus changed`);
     }
+
+  }
+
+  view_display() {
+
+    const view = z2ui5_cl_ui5_view_builder.factory()
+        .ele({ n: "View", ns: "mvc" })
+            .a({ n: "displayBlock", v: "true" })
+            .a({ n: "height",       v: "100%" })
+            .a({ n: "xmlns",        v: "sap.m" })
+            .a({ n: "xmlns:mvc",    v: "sap.ui.core.mvc" })
+            .a({ n: "xmlns:form",   v: "sap.ui.layout.form" });
+
+    const page = view.ele("Shell")
+        .ele("Page")
+            .a({ n: "title",          v: "abap2UI5 - Focus - Set Focus and Select Text in an Input" })
+            .a({ n: "showNavButton",  b: this.client.check_app_prev_stack() })
+            .a({ n: "navButtonPress", v: this.client._event_nav_app_leave() });
+
+    page.tag("MessageStrip")
+        .a({ n: "text",     v: "Press focus here beside a field: the set_focus front-end action moves the keyboard " +
+                   "focus into that input and selects the characters between Selection start and Selection end " +
+                   "(0-based) - change the two positions and press again to move the selection." })
+        .a({ n: "type",     v: "Information" })
+        .a({ n: "showIcon", b: true })
+        .a({ n: "class",    v: "sapUiSmallMargin" });
+
+    page.ele({ n: "SimpleForm", ns: "form" })
+        .a({ n: "title",    v: "Focus & Cursor" })
+        .a({ n: "editable", b: true })
+        .ele({ n: "content", ns: "form" })
+            .tag("Title")
+                .a({ n: "text", v: "Input" })
+            .tag("Label")
+                .a({ n: "text", v: "Selection start" })
+            .tag("Input")
+                .a({ n: "value", v: this.client._bind("selstart") })
+            .tag("Label")
+                .a({ n: "text", v: "Selection end" })
+            .tag("Input")
+                .a({ n: "value", v: this.client._bind("selend") })
+            .tag("Label")
+                .a({ n: "text", v: "Field 1" })
+            .tag("Input")
+                .a({ n: "id",    v: "BUTTON01" })
+                .a({ n: "value", v: this.client._bind("field_01") })
+            .tag("Button")
+                .a({ n: "press", v: this.client._event("BUTTON01") })
+                .a({ n: "text",  v: "focus here" })
+            .tag("Label")
+                .a({ n: "text", v: "Field 2" })
+            .tag("Input")
+                .a({ n: "id",    v: "BUTTON02" })
+                .a({ n: "value", v: this.client._bind("field_02") })
+            .tag("Button")
+                .a({ n: "press", v: this.client._event("BUTTON02") })
+                .a({ n: "text",  v: "focus here" });
+
+    this.client.view_display(view.stringify());
 
   }
 });

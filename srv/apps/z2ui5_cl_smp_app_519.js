@@ -19,17 +19,6 @@ defineApp("Z2UI5_CL_SMP_APP_519", class {
 
   }
 
-  on_event() {
-
-    if (this.client.get_event() === "GREET") {
-      // The text element is translated, the value is not - so the two are
-      // concatenated here rather than written as one literal. A text element
-      // with a placeholder would be a message class instead.
-      this.client.message_box_display(`${"Hello"} ${this.name}`);
-    }
-
-  }
-
   view_display() {
 
     // the three text symbols this app is about - see the block below
@@ -95,6 +84,17 @@ defineApp("Z2UI5_CL_SMP_APP_519", class {
             .a({ n: "class", v: "sapUiSmallMarginTop" });
 
     this.client.view_display(view.stringify());
+
+  }
+
+  on_event() {
+
+    if (this.client.get_event() === "GREET") {
+      // The text element is translated, the value is not - so the two are
+      // concatenated here rather than written as one literal. A text element
+      // with a placeholder would be a message class instead.
+      this.client.message_box_display(`${"Hello"} ${this.name}`);
+    }
 
   }
 });
